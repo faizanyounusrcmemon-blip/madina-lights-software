@@ -35,7 +35,7 @@ import MonthlyReport from "./pages/MonthlyReport";
 import RateDifferenceReport from "./pages/RateDifferenceReport";
 import BarcodePrint from "./pages/BarcodePrint";
 
-import Login from "./pages/login";
+import Login from "./pages/Login";
 import InvoiceEdit from "./pages/InvoiceEdit";
 import PurchaseEdit from "./pages/PurchaseEdit";
 
