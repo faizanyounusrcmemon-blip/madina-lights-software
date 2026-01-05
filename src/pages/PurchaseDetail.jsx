@@ -27,34 +27,36 @@ export default function PurchaseDetail({ onNavigate }) {
       const { data, error } = await supabase
         .from("purchases")
         .select("id, invoice_no, company_name, purchase_date, amount")
-        .eq("is_deleted", false)           // ⭐ Only non-deleted entries
+        .eq("is_deleted", false)
         .gte("purchase_date", from)
         .lte("purchase_date", to)
         .order("purchase_date", { ascending: false });
 
       if (error) throw error;
 
+      // ✅ Group by invoice_no safely
       const grouped = Object.values(
         data.reduce((acc, row) => {
-          if (!acc[row.invoice_no]) {
-            acc[row.invoice_no] = {
+          const invNo = String(row.invoice_no || ""); // Always string
+          if (!acc[invNo]) {
+            acc[invNo] = {
               id: row.id,
-              invoice_no: row.invoice_no,
-              company_name: row.company_name,
+              invoice_no: invNo,
+              company_name: row.company_name || "",
               purchase_date: row.purchase_date,
               total: 0
             };
           }
-          acc[row.invoice_no].total += Number(row.amount || 0);
+          acc[invNo].total += Number(row.amount || 0);
           return acc;
         }, {})
       );
 
-      const q = search.toLowerCase();
+      const q = String(search).toLowerCase(); // safe string
       const filtered = grouped.filter(
         r =>
-          (r.invoice_no || "").toLowerCase().includes(q) ||
-          (r.company_name || "").toLowerCase().includes(q)
+          String(r.invoice_no || "").toLowerCase().includes(q) ||
+          String(r.company_name || "").toLowerCase().includes(q)
       );
 
       setRows(filtered);
