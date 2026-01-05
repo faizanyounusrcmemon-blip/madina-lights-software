@@ -11,7 +11,6 @@ export default function Login({ onLogin }) {
     e.preventDefault();
     setMsg("");
 
-    // ✅ SAFE one-line SELECT query (No line breaks)
     const { data, error } = await supabase
       .from("app_users")
       .select(
@@ -20,12 +19,7 @@ export default function Login({ onLogin }) {
       .eq("username", username)
       .maybeSingle();
 
-    if (error || !data) {
-      setMsg("❌ غلط username یا password");
-      return;
-    }
-
-    if (data.password !== password) {
+    if (error || !data || data.password !== password) {
       setMsg("❌ غلط username یا password");
       return;
     }
@@ -51,7 +45,6 @@ export default function Login({ onLogin }) {
     };
 
     sessionStorage.setItem("user", JSON.stringify(userObj));
-
     setMsg("✅ Login successful");
     onLogin(userObj);
   }
@@ -69,68 +62,131 @@ export default function Login({ onLogin }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#000",
-        color: "#f3c46b",
+        background:
+          "radial-gradient(circle at top, #1e3c72, #0f2027 70%)",
       }}
     >
       <form
         onSubmit={handleLogin}
         style={{
-          width: 320,
-          background: "#111",
-          padding: 18,
-          borderRadius: 10,
-          border: "1px solid #333",
+          width: 360,
+          padding: 26,
+          borderRadius: 16,
+          background: "rgba(255,255,255,0.08)",
+          backdropFilter: "blur(10px)",
+          boxShadow: "0 20px 40px rgba(0,0,0,0.6)",
+          border: "1px solid rgba(255,255,255,0.15)",
+          color: "#eaf6ff",
         }}
       >
-        <h2 style={{ marginTop: 0, marginBottom: 12, textAlign: "center" }}>
-          Madina Lights
+        <h2
+          style={{
+            margin: 0,
+            marginBottom: 18,
+            textAlign: "center",
+            fontWeight: 800,
+            letterSpacing: 1,
+            color: "#8fd3ff",
+          }}
+        >
+          💡 Madina Lights 💡
         </h2>
 
-        <label>Username</label>
+        <label style={{ fontSize: 13, opacity: 0.85 }}>Username</label>
         <input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          style={{ width: "100%", padding: 8, borderRadius: 6, marginBottom: 10 }}
+          placeholder="Enter username"
+          style={{
+            width: "100%",
+            padding: "10px 12px",
+            borderRadius: 10,
+            marginTop: 4,
+            marginBottom: 14,
+            border: "1px solid rgba(255,255,255,0.2)",
+            background: "rgba(0,0,0,0.35)",
+            color: "#fff",
+            outline: "none",
+          }}
         />
 
-        <label>Password</label>
-        <div style={{ display: "flex", gap: 6, marginBottom: 10 }}>
+        <label style={{ fontSize: 13, opacity: 0.85 }}>Password</label>
+        <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
           <input
             type={showPw ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            style={{ flex: 1, padding: 8, borderRadius: 6 }}
+            placeholder="Enter password"
+            style={{
+              flex: 1,
+              padding: "10px 12px",
+              borderRadius: 10,
+              border: "1px solid rgba(255,255,255,0.2)",
+              background: "rgba(0,0,0,0.35)",
+              color: "#fff",
+              outline: "none",
+            }}
           />
           <button
             type="button"
-            className="menu-btn"
             onClick={() => setShowPw((v) => !v)}
+            style={{
+              padding: "0 12px",
+              borderRadius: 10,
+              border: "none",
+              background: "#4dabf7",
+              color: "#000",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
           >
-            {showPw ? "🙈 Hide" : "👁 Show"}
+            {showPw ? "🙈" : "👁"}
           </button>
         </div>
 
         {msg && (
           <div
             style={{
-              marginBottom: 10,
-              color: msg.startsWith("✅") ? "#9f9" : "#f88",
+              marginTop: 12,
+              marginBottom: 12,
+              fontSize: 14,
+              color: msg.startsWith("✅") ? "#9fffb0" : "#ff9f9f",
+              textAlign: "center",
             }}
           >
             {msg}
           </div>
         )}
 
-        <div style={{ display: "flex", gap: 8 }}>
-          <button type="submit" className="logout-btn" style={{ flex: 1 }}>
+        <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+          <button
+            type="submit"
+            style={{
+              flex: 1,
+              padding: "10px",
+              borderRadius: 12,
+              border: "none",
+              background: "linear-gradient(135deg,#4dabf7,#74c0fc)",
+              color: "#000",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
             Login
           </button>
+
           <button
             type="button"
-            className="menu-btn"
-            style={{ flex: 1 }}
             onClick={handleCancel}
+            style={{
+              flex: 1,
+              padding: "10px",
+              borderRadius: 12,
+              border: "1px solid rgba(255,255,255,0.25)",
+              background: "transparent",
+              color: "#eaf6ff",
+              cursor: "pointer",
+            }}
           >
             Cancel
           </button>
