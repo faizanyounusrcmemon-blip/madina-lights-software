@@ -1,16 +1,21 @@
 :root {
   --primary: #4da3ff;
   --primary-dark: #1e88e5;
+  --primary-gradient: linear-gradient(135deg, #4da3ff, #6ec6ff);
   --bg: #f4f9ff;
   --card: #ffffff;
   --text: #1f2937;
   --muted: #6b7280;
   --border: #e5e7eb;
+  --shadow-light: rgba(0,0,0,0.08);
+  --shadow-hover: rgba(0,0,0,0.12);
+  --radius: 12px;
 }
 
 * {
   box-sizing: border-box;
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  transition: all 0.3s ease;
 }
 
 html, body, #root {
@@ -18,25 +23,65 @@ html, body, #root {
   margin: 0;
   background: var(--bg);
   color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
   color: var(--primary);
   text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
 a:hover {
   color: var(--primary-dark);
+  text-decoration: underline;
 }
 
 button {
-  background: var(--primary);
+  background: var(--primary-gradient);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
+  border-radius: var(--radius);
+  padding: 10px 18px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
+  box-shadow: 0 4px 12px var(--shadow-light);
+  transition: all 0.3s ease;
 }
+
 button:hover {
+  background: var(--primary-dark);
+  box-shadow: 0 6px 20px var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+input, select, textarea {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  outline: none;
+  font-size: 14px;
+  color: var(--text);
+  transition: all 0.3s ease;
+  background: #ffffff;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(77,163,255,0.2);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
   background: var(--primary-dark);
 }
