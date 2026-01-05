@@ -2,55 +2,83 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #f4f7fb; /* soft background for contrast */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 22px;
+  padding: 16px 28px;
   background: linear-gradient(90deg, #4da3ff, #6ec6ff);
   color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
 .brand {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 1px;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 1.2px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
 .nav-left {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: center;
 }
 
 .menu-btn {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.2);
   border: none;
   color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
+  padding: 10px 18px;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
 }
 
 .menu-btn:hover {
-  background: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .content-area {
-  padding: 24px;
+  padding: 28px;
 }
 
 .card {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
 }
 
 .logout-btn {
   background: white;
   color: #1e88e5;
   font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 2px solid #1e88e5;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: #1e88e5;
+  color: white;
+  box-shadow: 0 6px 16px rgba(30,136,229,0.3);
 }
