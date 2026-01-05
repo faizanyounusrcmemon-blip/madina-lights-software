@@ -8,13 +8,19 @@ export default function MemoryStatus({ onNavigate }) {
   const loadStatus = async () => {
     setLoading(true);
 
-    const { data: result, error } = await supabase.rpc("get_memory_status");
+    try {
+      const { data: result, error } = await supabase.rpc("get_memory_status");
 
-    if (error) {
-      console.error(error);
+      if (error) {
+        console.error("RPC Error:", error);
+        setData(null);
+      } else {
+        // Supabase RPC returns array of rows
+        setData(result?.[0] || null);
+      }
+    } catch (err) {
+      console.error("Unexpected Error:", err);
       setData(null);
-    } else {
-      setData(result[0]);
     }
 
     setLoading(false);
@@ -29,7 +35,6 @@ export default function MemoryStatus({ onNavigate }) {
       className="container-fluid py-3"
       style={{ fontFamily: "Inter", color: "#fff" }}
     >
-      {/* EXIT BUTTON */}
       <button
         onClick={() => onNavigate("dashboard")}
         style={{
@@ -68,12 +73,10 @@ export default function MemoryStatus({ onNavigate }) {
                   <th style={{ width: "200px" }}>Used Space</th>
                   <td>{data.used}</td>
                 </tr>
-
                 <tr>
                   <th>Remaining Space</th>
                   <td>{data.remaining}</td>
                 </tr>
-
                 <tr>
                   <th>Approx Remaining Rows</th>
                   <td>{data.approx_remaining_rows}</td>
