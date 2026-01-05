@@ -1,3 +1,6 @@
+/* =========================
+   Filters & Inputs
+========================= */
 .filters-bar {
   display: flex;
   gap: 14px;
@@ -21,6 +24,8 @@
   outline: none;
   transition: all 0.3s ease;
   font-size: 14px;
+  background: #f9fbfd;
+  color: #333;
 }
 
 .search-box:focus,
@@ -29,6 +34,9 @@
   box-shadow: 0 2px 8px rgba(77,163,255,0.2);
 }
 
+/* =========================
+   Invoice Table
+========================= */
 .invoice-table {
   width: 100%;
   border-collapse: separate;
@@ -59,6 +67,9 @@
   transition: background 0.3s ease;
 }
 
+/* =========================
+   Buttons
+========================= */
 .btn-edit,
 .btn-delete,
 .btn-print {
@@ -103,6 +114,9 @@
   box-shadow: 0 4px 12px rgba(66,165,245,0.4);
 }
 
+/* =========================
+   Summary Card
+========================= */
 .summary-card {
   background: linear-gradient(135deg, #4da3ff, #6ec6ff);
   color: white;
@@ -118,4 +132,15 @@
 .summary-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 16px 36px rgba(77,163,255,0.5);
+}
+
+/* =========================
+   Open Module Background
+========================= */
+.module-open {
+  background: #e0f7fa; /* soft light blue for open modules */
+  border-radius: 16px;
+  padding: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
