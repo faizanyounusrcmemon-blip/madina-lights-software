@@ -1,8 +1,8 @@
 // ===========================================================
-//   SALE ITEM DETAIL — PREMIUM ERP UI + EXIT BUTTON ADDED
+//   SALE ITEM DETAIL — PREMIUM ERP UI + CUSTOM DROPDOWNS
 // ===========================================================
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import supabase from "../utils/supabaseClient";
 
 export default function SaleItemDetail({ onNavigate }) {
@@ -14,11 +14,21 @@ export default function SaleItemDetail({ onNavigate }) {
   const [selectedItem, setSelectedItem] = useState("");
   const [filteredSales, setFilteredSales] = useState([]);
 
+  const [customerDropdownOpen, setCustomerDropdownOpen] = useState(false);
+  const [itemDropdownOpen, setItemDropdownOpen] = useState(false);
+
+  const customerRef = useRef(null);
+  const itemRef = useRef(null);
+
   // Load customers and items
   useEffect(() => {
     const loadLists = async () => {
-      const { data: customers } = await supabase.from("sales").select("customer_name");
-      const { data: items } = await supabase.from("sales").select("item_name");
+      const { data: customers } = await supabase
+        .from("sales")
+        .select("customer_name");
+      const { data: items } = await supabase
+        .from("sales")
+        .select("item_name");
 
       setCustomerList([...new Set(customers?.map((c) => c.customer_name) || [])]);
       setItemList([...new Set(items?.map((i) => i.item_name) || [])]);
@@ -26,11 +36,26 @@ export default function SaleItemDetail({ onNavigate }) {
     loadLists();
   }, []);
 
+  // Outside click to close dropdowns
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (customerRef.current && !customerRef.current.contains(e.target)) {
+        setCustomerDropdownOpen(false);
+      }
+      if (itemRef.current && !itemRef.current.contains(e.target)) {
+        setItemDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   // Search sales data
   const handleSearch = async () => {
     let query = supabase.from("sales").select("*");
 
-    if (fromDate && toDate) query = query.gte("sale_date", fromDate).lte("sale_date", toDate);
+    if (fromDate && toDate)
+      query = query.gte("sale_date", fromDate).lte("sale_date", toDate);
     if (selectedCustomer) query = query.eq("customer_name", selectedCustomer);
     if (selectedItem) query = query.eq("item_name", selectedItem);
 
@@ -48,7 +73,7 @@ export default function SaleItemDetail({ onNavigate }) {
 
   return (
     <div className="container-fluid py-3" style={{ fontFamily: "Inter", color: "#fff" }}>
-      
+
       {/* EXIT BUTTON */}
       <button
         onClick={() => onNavigate("sale-detail")}
@@ -107,41 +132,118 @@ export default function SaleItemDetail({ onNavigate }) {
           </div>
 
           {/* Customer */}
-          <div className="col-md-3">
+          <div className="col-md-3 position-relative" ref={customerRef}>
             <label className="fw-bold">Customer</label>
             <input
-              list="customerList"
+              type="text"
               value={selectedCustomer}
               onChange={(e) => setSelectedCustomer(e.target.value)}
+              onFocus={() => setCustomerDropdownOpen(true)}
               className="form-control form-control-sm"
               placeholder="Search customer..."
               style={{ background: "#111", color: "#fff", border: "1px solid #444" }}
             />
-            <datalist id="customerList">
-              {customerList.map((c, i) => (
-                <option key={i} value={c} />
-              ))}
-            </datalist>
+            {customerDropdownOpen && customerList.length > 0 && (
+              <ul
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  right: 0,
+                  background: "#1a1a1a",
+                  color: "#fff",
+                  maxHeight: "150px",
+                  overflowY: "auto",
+                  border: "1px solid #444",
+                  borderRadius: "8px",
+                  padding: 0,
+                  margin: 0,
+                  listStyle: "none",
+                  zIndex: 999,
+                }}
+              >
+                {customerList
+                  .filter((c) =>
+                    c.toLowerCase().includes(selectedCustomer.toLowerCase())
+                  )
+                  .map((c, i) => (
+                    <li
+                      key={i}
+                      onClick={() => {
+                        setSelectedCustomer(c);
+                        setCustomerDropdownOpen(false);
+                      }}
+                      style={{
+                        padding: "8px 12px",
+                        cursor: "pointer",
+                        borderBottom: "1px solid #333",
+                      }}
+                      onMouseEnter={(e) => (e.target.style.background = "#333")}
+                      onMouseLeave={(e) => (e.target.style.background = "transparent")}
+                    >
+                      {c}
+                    </li>
+                  ))}
+              </ul>
+            )}
           </div>
 
           {/* Item */}
-          <div className="col-md-3">
+          <div className="col-md-3 position-relative" ref={itemRef}>
             <label className="fw-bold">Item</label>
             <input
-              list="itemList"
+              type="text"
               value={selectedItem}
               onChange={(e) => setSelectedItem(e.target.value)}
+              onFocus={() => setItemDropdownOpen(true)}
               className="form-control form-control-sm"
               placeholder="Search item..."
               style={{ background: "#111", color: "#fff", border: "1px solid #444" }}
             />
-            <datalist id="itemList">
-              {itemList.map((i, idx) => (
-                <option key={idx} value={i} />
-              ))}
-            </datalist>
+            {itemDropdownOpen && itemList.length > 0 && (
+              <ul
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  right: 0,
+                  background: "#1a1a1a",
+                  color: "#fff",
+                  maxHeight: "150px",
+                  overflowY: "auto",
+                  border: "1px solid #444",
+                  borderRadius: "8px",
+                  padding: 0,
+                  margin: 0,
+                  listStyle: "none",
+                  zIndex: 999,
+                }}
+              >
+                {itemList
+                  .filter((i) =>
+                    i.toLowerCase().includes(selectedItem.toLowerCase())
+                  )
+                  .map((i, idx) => (
+                    <li
+                      key={idx}
+                      onClick={() => {
+                        setSelectedItem(i);
+                        setItemDropdownOpen(false);
+                      }}
+                      style={{
+                        padding: "8px 12px",
+                        cursor: "pointer",
+                        borderBottom: "1px solid #333",
+                      }}
+                      onMouseEnter={(e) => (e.target.style.background = "#333")}
+                      onMouseLeave={(e) => (e.target.style.background = "transparent")}
+                    >
+                      {i}
+                    </li>
+                  ))}
+              </ul>
+            )}
           </div>
-
         </div>
 
         {/* Search Button */}
