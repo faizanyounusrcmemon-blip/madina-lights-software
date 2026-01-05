@@ -1,5 +1,5 @@
 // =====================================================
-//   FINAL Restore.jsx (Date Sorting + Size Fix + Full Clean UI)
+//   FINAL Restore.jsx (Dark UI + Heading Fix + Clean)
 // =====================================================
 
 import React, { useEffect, useState } from "react";
@@ -22,9 +22,9 @@ export default function Restore({ onNavigate }) {
     "snapshot_logs",
   ];
 
-  // ---------------------------------------------
+  // -------------------------
   // FILE SIZE FORMATTER
-  // ---------------------------------------------
+  // -------------------------
   function formatSize(bytes) {
     if (!bytes) return "0 B";
     if (bytes < 1024) return bytes + " B";
@@ -32,9 +32,9 @@ export default function Restore({ onNavigate }) {
     return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   }
 
-  // ---------------------------------------------
+  // -------------------------
   // LOAD BACKUPS
-  // ---------------------------------------------
+  // -------------------------
   useEffect(() => {
     loadBackups();
   }, []);
@@ -44,17 +44,14 @@ export default function Restore({ onNavigate }) {
     const data = await res.json();
 
     if (data.success) {
-      // FIXED SORT: Latest backup on top
-      const sorted = data.files.sort(
-        (a, b) => new Date(b.date) - new Date(a.date)
-      );
+      const sorted = data.files.sort((a, b) => new Date(b.date) - new Date(a.date));
       setBackups(sorted);
     }
   }
 
-  // ---------------------------------------------
+  // -------------------------
   // RESTORE FILE
-  // ---------------------------------------------
+  // -------------------------
   async function restoreFile(fileName, mode, table = null) {
     const password = prompt("Enter Restore Password:");
     if (!password) return;
@@ -90,9 +87,9 @@ export default function Restore({ onNavigate }) {
     alert(data.success ? "✔ Restore Successful!" : "❌ " + data.error);
   }
 
-  // ---------------------------------------------
+  // -------------------------
   // DELETE BACKUP
-  // ---------------------------------------------
+  // -------------------------
   async function deleteBackup(fileName) {
     const password = prompt("Enter Password to Delete:");
     if (!password) return;
@@ -116,9 +113,9 @@ export default function Restore({ onNavigate }) {
     }
   }
 
-  // ---------------------------------------------
-  // DOWNLOAD BACKUP (PASSWORD PROTECTED)
-  // ---------------------------------------------
+  // -------------------------
+  // DOWNLOAD BACKUP
+  // -------------------------
   async function downloadBackup(fileName) {
     const password = prompt("Enter Password to Download:");
     if (!password) return;
@@ -137,18 +134,18 @@ export default function Restore({ onNavigate }) {
     link.click();
   }
 
-  // ---------------------------------------------
+  // -------------------------
   // SEARCH FILTER
-  // ---------------------------------------------
+  // -------------------------
   const filtered = backups.filter((b) =>
     b.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  // =========================================================
-  // UI STARTS HERE
-  // =========================================================
+  // =====================================================
+  // UI START
+  // =====================================================
   return (
-    <div style={{ padding: 20, color: "white" }}>
+    <div style={{ padding: 20, color: "white", background: "#111", minHeight: "100vh", fontFamily: "Inter, system-ui, sans-serif" }}>
       
       {/* BACK BUTTON */}
       <button
@@ -160,12 +157,13 @@ export default function Restore({ onNavigate }) {
           border: "none",
           color: "white",
           fontWeight: "bold",
+          cursor: "pointer"
         }}
       >
         ⬅ Back
       </button>
 
-      <h1 style={{ marginTop: 20 }}>📦 Backup History</h1>
+      <h1 style={{ marginTop: 20, marginBottom: 15, color: "#f3c46b" }}>📦 Backup History</h1>
 
       {/* SEARCH BAR */}
       <input
@@ -177,17 +175,20 @@ export default function Restore({ onNavigate }) {
           width: "300px",
           padding: "8px",
           borderRadius: "6px",
-          marginTop: "15px",
+          marginBottom: "15px",
           border: "1px solid #666",
+          background: "#222",
+          color: "white"
         }}
       />
 
       {/* PROGRESS BAR */}
       {restoring && (
-        <div style={{ marginTop: 15 }}>
+        <div style={{ marginBottom: 20 }}>
           <div
             style={{
-              width: "350px",
+              width: "100%",
+              maxWidth: "350px",
               height: "12px",
               background: "#333",
               borderRadius: "6px",
@@ -203,14 +204,14 @@ export default function Restore({ onNavigate }) {
               }}
             />
           </div>
-          <p>{progress}% Restoring...</p>
+          <p style={{ marginTop: 5, color: "#ff9800" }}>{progress}% Restoring...</p>
         </div>
       )}
 
       {/* BACKUP CARDS */}
       <div
         style={{
-          marginTop: 25,
+          marginTop: 10,
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
           gap: "15px",
@@ -224,11 +225,12 @@ export default function Restore({ onNavigate }) {
               padding: "18px",
               borderRadius: "10px",
               border: "1px solid #333",
+              color: "white"
             }}
           >
-            <h3 style={{ marginBottom: 5 }}>📁 {file.name}</h3>
-            <p>📅 {file.date}</p>
-            <p>📦 Size: {formatSize(file.size)}</p>
+            <h3 style={{ marginBottom: 5, color: "#f3c46b" }}>📁 {file.name}</h3>
+            <p style={{ margin: "2px 0" }}>📅 {file.date}</p>
+            <p style={{ margin: "2px 0" }}>📦 Size: {formatSize(file.size)}</p>
 
             {/* RESTORE OPTIONS */}
             <div style={{ marginTop: 10 }}>
@@ -240,6 +242,7 @@ export default function Restore({ onNavigate }) {
                   borderRadius: "6px",
                   color: "white",
                   marginRight: "10px",
+                  cursor: "pointer"
                 }}
               >
                 🔄 Full
@@ -252,8 +255,10 @@ export default function Restore({ onNavigate }) {
                   padding: "6px",
                   borderRadius: "6px",
                   marginRight: 10,
-                  background: "#fff",
-                  color: "#000",
+                  background: "#222",
+                  color: "white",
+                  border: "1px solid #666",
+                  cursor: "pointer"
                 }}
               >
                 <option value="" disabled>
@@ -273,6 +278,7 @@ export default function Restore({ onNavigate }) {
                   padding: "6px 10px",
                   borderRadius: "6px",
                   color: "white",
+                  cursor: "pointer"
                 }}
               >
                 🧩 Restore
@@ -288,6 +294,7 @@ export default function Restore({ onNavigate }) {
                   padding: "6px 10px",
                   color: "white",
                   borderRadius: "6px",
+                  cursor: "pointer"
                 }}
               >
                 ⬇ Download
@@ -300,6 +307,7 @@ export default function Restore({ onNavigate }) {
                   padding: "6px 10px",
                   color: "white",
                   borderRadius: "6px",
+                  cursor: "pointer"
                 }}
               >
                 🗑 Delete
