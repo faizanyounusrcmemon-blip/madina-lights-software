@@ -1,5 +1,5 @@
 // ===============================
-//   FINAL App.jsx (FIXED)
+//   FINAL App.jsx (Backup Removed)
 // ===============================
 
 import React, { useEffect, useState } from "react";
@@ -42,92 +42,6 @@ import PurchaseEdit from "./pages/PurchaseEdit";
 import DeletedInvoiceReport from "./pages/DeletedInvoiceReport";
 import MonthWiseSummary from "./pages/MonthWiseSummary";
 import DayWiseSaleReport from "./pages/DayWiseSaleReport";
-
-
-// =================================================
-//   BACKUP BUTTON
-// =================================================
-function BackupButton() {
-  const [progress, setProgress] = useState(0);
-  const [isBackingUp, setIsBackingUp] = useState(false);
-
-  async function takeBackup() {
-    const pwd = prompt("Enter backup password:");
-    if (!pwd) return;
-
-    if (pwd !== "8515") {
-      alert("❌ Incorrect Password!");
-      return;
-    }
-
-    setProgress(0);
-    setIsBackingUp(true);
-
-    const int = setInterval(() => {
-      setProgress((p) => (p >= 90 ? 90 : p + 5));
-    }, 150);
-
-    const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/backup`, {
-      method: "POST",
-    });
-
-    const data = await res.json();
-
-    clearInterval(int);
-    setProgress(100);
-
-    setTimeout(() => {
-      setIsBackingUp(false);
-      setProgress(0);
-    }, 700);
-
-    alert(data.success ? "✅ Backup Completed!" : "❌ " + data.error);
-  }
-
-  return (
-    <div style={{ marginTop: "8px" }}>
-      <button
-        onClick={takeBackup}
-        disabled={isBackingUp}
-        style={{
-          background: isBackingUp ? "#6c757d" : "#0d6efd",
-          color: "white",
-          padding: "4px 10px",
-          fontSize: "13px",
-          borderRadius: "5px",
-          cursor: "pointer",
-          border: "none",
-          marginRight: "5px",
-        }}
-      >
-        ☁ {isBackingUp ? "Backing Up..." : "Backup"}
-      </button>
-
-      {isBackingUp && (
-        <div
-          style={{
-            width: "150px",
-            height: "6px",
-            background: "#ccc",
-            marginTop: "5px",
-            borderRadius: "4px",
-          }}
-        >
-          <div
-            style={{
-              width: `${progress}%`,
-              height: "100%",
-              background: "#28a745",
-              borderRadius: "4px",
-              transition: "0.2s",
-            }}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
 
 // =================================================
 //   MAIN APP
@@ -216,11 +130,7 @@ export default function App() {
     <div className="app-root">
       {user && <Navbar onNavigate={setPage} />}
 
-      {user && (
-        <div style={{ paddingLeft: "10px" }}>
-          <BackupButton />
-        </div>
-      )}
+      {/* Removed Backup Button */}
 
       <div className="content-area">{renderPage()}</div>
     </div>
