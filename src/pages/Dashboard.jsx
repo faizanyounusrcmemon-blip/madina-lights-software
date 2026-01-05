@@ -43,10 +43,7 @@ export default function Dashboard() {
         return;
       }
       try {
-        const { data, error } = await supabase
-          .from("items")
-          .select("*")
-          .limit(10);
+        const { data, error } = await supabase.from("items").select("*").limit(10);
 
         if (error) throw error;
         setItems(data || []);
@@ -86,8 +83,9 @@ export default function Dashboard() {
       style={{
         padding: 24,
         minHeight: "100vh",
-        background: "#f4f9ff",
+        background: "linear-gradient(to bottom, #d0f0ff, #e6f7ff)", // light blue background
         fontFamily: "Inter, system-ui, sans-serif",
+        transition: "background 0.5s ease",
       }}
     >
       {/* HEADER */}
@@ -95,7 +93,7 @@ export default function Dashboard() {
         style={{
           background: "linear-gradient(90deg,#4da3ff,#6ec6ff)",
           padding: "18px 24px",
-          borderRadius: 14,
+          borderRadius: 16,
           color: "white",
           marginBottom: 22,
           display: "flex",
@@ -122,7 +120,15 @@ export default function Dashboard() {
           marginBottom: 22,
         }}
       >
-        <div className="card">
+        <div
+          className="card"
+          style={{
+            background: "#e0f7fa", // light blue card background
+            borderRadius: 16,
+            padding: 18,
+            boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+          }}
+        >
           <h3 style={{ marginTop: 0, color: "#1e88e5" }}>
             ☁ Last Backup
           </h3>
@@ -141,13 +147,31 @@ export default function Dashboard() {
             gap: 12,
           }}
         >
-          <div className="card" style={{ textAlign: "center" }}>
+          <div
+            className="card"
+            style={{
+              background: "#e0f7fa",
+              borderRadius: 16,
+              padding: 18,
+              textAlign: "center",
+              boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+            }}
+          >
             <div style={{ fontSize: 28 }}>💍</div>
             <small>Items</small>
             <h3 style={{ margin: 4 }}>{items.length}</h3>
           </div>
 
-          <div className="card" style={{ textAlign: "center" }}>
+          <div
+            className="card"
+            style={{
+              background: "#e0f7fa",
+              borderRadius: 16,
+              padding: 18,
+              textAlign: "center",
+              boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+            }}
+          >
             <div style={{ fontSize: 28 }}>✅</div>
             <small>Status</small>
             <h3 style={{ margin: 4, color: "#22c55e" }}>All Good</h3>
@@ -156,7 +180,15 @@ export default function Dashboard() {
       </div>
 
       {/* ITEMS TABLE */}
-      <div className="card">
+      <div
+        className="card"
+        style={{
+          background: "#e0f7fa", // light blue background for table card
+          borderRadius: 16,
+          padding: 18,
+          boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+        }}
+      >
         <div
           style={{
             display: "flex",
@@ -171,7 +203,19 @@ export default function Dashboard() {
             <small>First 10 items</small>
           </div>
 
-          <button onClick={() => setShowList(!showList)}>
+          <button
+            style={{
+              padding: "6px 12px",
+              borderRadius: 10,
+              border: "none",
+              background: "#81d4fa",
+              color: "#333",
+              cursor: "pointer",
+              fontWeight: 600,
+              transition: "all 0.3s ease",
+            }}
+            onClick={() => setShowList(!showList)}
+          >
             {showList ? "Hide ▲" : "Show ▼"}
           </button>
         </div>
