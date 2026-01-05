@@ -41,7 +41,7 @@ export default function Login({ onLogin }) {
       manage_users: !!data.manage_users,
       stock_report: !!data.stock_report,
       sale_report: !!data.sale_report,
-      monthly_report: !!data.monthly_report
+      monthly_report: !!data.monthly_report,
     };
 
     sessionStorage.setItem("user", JSON.stringify(userObj));
@@ -63,55 +63,55 @@ export default function Login({ onLogin }) {
         alignItems: "center",
         justifyContent: "center",
         background:
-          "radial-gradient(circle at top, #1e3c72, #0f2027 70%)",
+          "radial-gradient(circle at top, #e0f7fa, #ffffff 80%)",
       }}
     >
       <form
         onSubmit={handleLogin}
         style={{
           width: 360,
-          padding: 26,
-          borderRadius: 16,
-          background: "rgba(255,255,255,0.08)",
-          backdropFilter: "blur(10px)",
-          boxShadow: "0 20px 40px rgba(0,0,0,0.6)",
-          border: "1px solid rgba(255,255,255,0.15)",
-          color: "#eaf6ff",
+          padding: 28,
+          borderRadius: 20,
+          background: "#ffffff",
+          boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
+          border: "1px solid rgba(200,200,200,0.3)",
+          color: "#333",
         }}
       >
         <h2
           style={{
             margin: 0,
-            marginBottom: 18,
+            marginBottom: 20,
             textAlign: "center",
             fontWeight: 800,
             letterSpacing: 1,
-            color: "#8fd3ff",
+            color: "#4dabf7",
           }}
         >
           💡 Madina Lights 💡
         </h2>
 
-        <label style={{ fontSize: 13, opacity: 0.85 }}>Username</label>
+        <label style={{ fontSize: 13, color: "#555" }}>Username</label>
         <input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Enter username"
           style={{
             width: "100%",
-            padding: "10px 12px",
-            borderRadius: 10,
-            marginTop: 4,
-            marginBottom: 14,
-            border: "1px solid rgba(255,255,255,0.2)",
-            background: "rgba(0,0,0,0.35)",
-            color: "#fff",
+            padding: "12px 14px",
+            borderRadius: 12,
+            marginTop: 6,
+            marginBottom: 16,
+            border: "1px solid #cfd8dc",
+            background: "#f9fbfd",
+            color: "#333",
             outline: "none",
+            transition: "all 0.3s ease",
           }}
         />
 
-        <label style={{ fontSize: 13, opacity: 0.85 }}>Password</label>
-        <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+        <label style={{ fontSize: 13, color: "#555" }}>Password</label>
+        <div style={{ display: "flex", gap: 8, marginTop: 6 }}>
           <input
             type={showPw ? "text" : "password"}
             value={password}
@@ -119,25 +119,27 @@ export default function Login({ onLogin }) {
             placeholder="Enter password"
             style={{
               flex: 1,
-              padding: "10px 12px",
-              borderRadius: 10,
-              border: "1px solid rgba(255,255,255,0.2)",
-              background: "rgba(0,0,0,0.35)",
-              color: "#fff",
+              padding: "12px 14px",
+              borderRadius: 12,
+              border: "1px solid #cfd8dc",
+              background: "#f9fbfd",
+              color: "#333",
               outline: "none",
+              transition: "all 0.3s ease",
             }}
           />
           <button
             type="button"
             onClick={() => setShowPw((v) => !v)}
             style={{
-              padding: "0 12px",
-              borderRadius: 10,
+              padding: "0 14px",
+              borderRadius: 12,
               border: "none",
-              background: "#4dabf7",
-              color: "#000",
+              background: "#a0e7ff",
+              color: "#333",
               fontWeight: 600,
               cursor: "pointer",
+              transition: "all 0.3s ease",
             }}
           >
             {showPw ? "🙈" : "👁"}
@@ -147,29 +149,32 @@ export default function Login({ onLogin }) {
         {msg && (
           <div
             style={{
-              marginTop: 12,
-              marginBottom: 12,
+              marginTop: 14,
+              marginBottom: 14,
               fontSize: 14,
-              color: msg.startsWith("✅") ? "#9fffb0" : "#ff9f9f",
+              color: msg.startsWith("✅") ? "#4caf50" : "#f44336",
               textAlign: "center",
+              fontWeight: 600,
             }}
           >
             {msg}
           </div>
         )}
 
-        <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
+        <div style={{ display: "flex", gap: 12, marginTop: 12 }}>
           <button
             type="submit"
             style={{
               flex: 1,
-              padding: "10px",
-              borderRadius: 12,
+              padding: "12px 0",
+              borderRadius: 14,
               border: "none",
-              background: "linear-gradient(135deg,#4dabf7,#74c0fc)",
-              color: "#000",
+              background: "linear-gradient(135deg,#81d4fa,#b3e5fc)",
+              color: "#333",
               fontWeight: 700,
               cursor: "pointer",
+              boxShadow: "0 6px 16px rgba(129,212,250,0.3)",
+              transition: "all 0.3s ease",
             }}
           >
             Login
@@ -180,12 +185,13 @@ export default function Login({ onLogin }) {
             onClick={handleCancel}
             style={{
               flex: 1,
-              padding: "10px",
-              borderRadius: 12,
-              border: "1px solid rgba(255,255,255,0.25)",
-              background: "transparent",
-              color: "#eaf6ff",
+              padding: "12px 0",
+              borderRadius: 14,
+              border: "1px solid #cfd8dc",
+              background: "#ffffff",
+              color: "#555",
               cursor: "pointer",
+              transition: "all 0.3s ease",
             }}
           >
             Cancel
