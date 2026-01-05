@@ -157,7 +157,7 @@ export default function Dashboard() {
               boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
             }}
           >
-            <div style={{ fontSize: 28 }}>💍</div>
+            <div style={{ fontSize: 28 }}>💡</div>
             <small>Items</small>
             <h3 style={{ margin: 4 }}>{items.length}</h3>
           </div>
