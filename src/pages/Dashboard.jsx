@@ -105,7 +105,7 @@ export default function Dashboard() {
         }}
       >
         <div>
-          <h2 style={{ margin: 0 }}>📊 Madina Lights Dashboard</h2>
+          <h2 style={{ margin: 0 }}>💡 Madina Lights 💡 Dashboard</h2>
           <small>System overview & status</small>
         </div>
         <div style={{ fontSize: 13, opacity: 0.9 }}>
