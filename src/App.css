@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f4f7fb; /* soft background for contrast */
+  background: var(--bg); /* global dark background */
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -51,34 +51,36 @@
 
 .content-area {
   padding: 28px;
+  background: var(--bg);
+  color: var(--text);
 }
 
 .card {
-  background: #ffffff;
+  background: var(--card);   /* dark card */
   border-radius: 16px;
   padding: 22px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.35);
 }
 
 .logout-btn {
-  background: white;
-  color: #1e88e5;
+  background: var(--card);
+  color: var(--primary);
   font-weight: 700;
   padding: 10px 20px;
   border-radius: 10px;
-  border: 2px solid #1e88e5;
+  border: 2px solid var(--primary);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .logout-btn:hover {
-  background: #1e88e5;
+  background: var(--primary);
   color: white;
   box-shadow: 0 6px 16px rgba(30,136,229,0.3);
 }
