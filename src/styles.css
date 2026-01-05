@@ -1,42 +1,84 @@
 .filters-bar {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   background: #ffffff;
-  padding: 12px;
-  border-radius: 12px;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  padding: 14px 16px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+.filters-bar:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
 .search-box,
 .date-picker {
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #cfd8dc;
+  outline: none;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.search-box:focus,
+.date-picker:focus {
+  border-color: #4da3ff;
+  box-shadow: 0 2px 8px rgba(77,163,255,0.2);
 }
 
 .invoice-table {
   width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 12px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #ffffff;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
 }
 
 .invoice-table th {
-  background: #e3f2fd;
-  padding: 12px;
-  color: #1e3a8a;
+  background: linear-gradient(90deg, #4da3ff, #6ec6ff);
+  padding: 14px;
+  color: white;
+  font-weight: 600;
+  text-align: left;
 }
 
 .invoice-table td {
-  padding: 12px;
+  padding: 14px;
   border-top: 1px solid #eee;
+  font-size: 14px;
+}
+
+.invoice-table tr:hover td {
+  background: #f1f8ff;
+  transition: background 0.3s ease;
+}
+
+.btn-edit,
+.btn-delete,
+.btn-print {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .btn-edit {
   background: #ffd54f;
+  color: #3e2723;
+}
+
+.btn-edit:hover {
+  background: #ffca28;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255,213,79,0.4);
 }
 
 .btn-delete {
@@ -44,16 +86,36 @@
   color: white;
 }
 
+.btn-delete:hover {
+  background: #e53935;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239,83,80,0.4);
+}
+
 .btn-print {
   background: #42a5f5;
   color: white;
 }
 
+.btn-print:hover {
+  background: #1e88e5;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(66,165,245,0.4);
+}
+
 .summary-card {
   background: linear-gradient(135deg, #4da3ff, #6ec6ff);
   color: white;
-  padding: 18px;
-  border-radius: 14px;
+  padding: 22px;
+  border-radius: 18px;
   text-align: center;
-  box-shadow: 0 8px 20px rgba(77,163,255,0.4);
+  box-shadow: 0 12px 28px rgba(77,163,255,0.4);
+  font-weight: 700;
+  font-size: 16px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(77,163,255,0.5);
 }
