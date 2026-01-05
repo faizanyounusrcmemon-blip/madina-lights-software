@@ -1,4 +1,3 @@
-// src/pages/Dashboard.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
 
@@ -18,9 +17,6 @@ export default function Dashboard() {
   const [lastBackup, setLastBackup] = useState("");
   const containerRef = useRef(null);
 
-  // =============================
-  // LOAD LAST BACKUP
-  // =============================
   useEffect(() => {
     loadLastBackup();
   }, []);
@@ -31,22 +27,18 @@ export default function Dashboard() {
         `${import.meta.env.VITE_BACKEND_URL}/api/list-backups`
       );
       const data = await res.json();
-
       if (data.success && data.files.length > 0) {
         setLastBackup(data.files[0].date);
       }
     } catch (err) {
-      console.error("Backup load error:", err);
+      console.error(err);
     }
   }
 
-  // =============================
-  // LOAD ITEMS
-  // =============================
   useEffect(() => {
     const fetchData = async () => {
       if (!supabase) {
-        setError("Supabase client not initialized — check .env");
+        setError("Supabase client not initialized");
         setLoading(false);
         return;
       }
@@ -67,13 +59,9 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target)
-      ) {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
         setShowList(false);
       }
     };
@@ -83,11 +71,8 @@ export default function Dashboard() {
   }, []);
 
   if (loading)
-    return (
-      <div style={{ padding: 30, color: "#fff" }}>
-        ⏳ Loading dashboard...
-      </div>
-    );
+    return <div style={{ padding: 30 }}>⏳ Dashboard loading...</div>;
+
   if (error)
     return (
       <div style={{ padding: 30, color: "red", fontWeight: "bold" }}>
@@ -99,121 +84,79 @@ export default function Dashboard() {
     <div
       ref={containerRef}
       style={{
-        padding: 25,
+        padding: 24,
         minHeight: "100vh",
+        background: "#f4f9ff",
         fontFamily: "Inter, system-ui, sans-serif",
-        color: "#f5f5f5",
-        background:
-          "radial-gradient(circle at top, #2b2b52 0, #050509 45%, #000 100%)",
       }}
     >
-      {/* GLOBAL STYLING */}
-      <style>
-        {`
-          .dash-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.75));
-            box-shadow: 0 12px 30px rgba(0,0,0,0.7);
-            border-radius: 18px;
-            border: 1px solid rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            transition: all 0.25s ease-out;
-          }
-          .dash-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 18px 40px rgba(0,0,0,0.85);
-            border-color: rgba(243,196,107,0.55);
-          }
-          .golden-text {
-            color: #f3c46b !important;
-            text-shadow: 0 0 10px rgba(243,196,107,0.6);
-          }
-          .dash-table th, .dash-table td {
-            border-bottom: 1px solid #333;
-          }
-        `}
-      </style>
-
       {/* HEADER */}
       <div
         style={{
+          background: "linear-gradient(90deg,#4da3ff,#6ec6ff)",
+          padding: "18px 24px",
+          borderRadius: 14,
+          color: "white",
+          marginBottom: 22,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: 20,
+          boxShadow: "0 8px 20px rgba(77,163,255,0.4)",
         }}
       >
         <div>
-          <h1 className="golden-text" style={{ margin: 0 }}>
-            💎 Madina Lights Dashboard
-          </h1>
-          <p style={{ color: "#bdbdbd", marginTop: 4 }}>
-            System status & quick overview
-          </p>
+          <h2 style={{ margin: 0 }}>📊 Madina Lights Dashboard</h2>
+          <small>System overview & status</small>
         </div>
-
-        <div
-          style={{
-            padding: "6px 12px",
-            borderRadius: 20,
-            border: "1px solid #333",
-            color: "#ccc",
-            background: "rgba(0,0,0,0.3)",
-          }}
-        >
-          ✅ Software Created By FaizanYounus
+        <div style={{ fontSize: 13, opacity: 0.9 }}>
+          Software by Faizan Younus
         </div>
       </div>
 
-      {/* TOP SECTION */}
+      {/* TOP CARDS */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "2fr 1.3fr",
-          gap: 16,
-          marginBottom: 25,
+          gridTemplateColumns: "2fr 1fr",
+          gap: 18,
+          marginBottom: 22,
         }}
       >
-        {/* BACKUP CARD */}
-        <div className="dash-card" style={{ padding: 18 }}>
-          <h3 className="golden-text" style={{ margin: 0 }}>
-            ☁ Last Backup Status
+        <div className="card">
+          <h3 style={{ marginTop: 0, color: "#1e88e5" }}>
+            ☁ Last Backup
           </h3>
-          <p style={{ marginTop: 8, fontSize: 18, fontWeight: "bold" }}>
+          <p style={{ fontSize: 18, fontWeight: "bold" }}>
             {lastBackup || "No backup found"}
           </p>
-          <p style={{ color: "#c0c0c0", fontSize: 13 }}>
-            Backup protects your jewellery system data.
-          </p>
+          <small style={{ color: "#6b7280" }}>
+            Your data is protected safely
+          </small>
         </div>
 
-        {/* SMALL STATS */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: 10,
+            gridTemplateColumns: "1fr 1fr",
+            gap: 12,
           }}
         >
-          <div className="dash-card" style={{ padding: 16, textAlign: "center" }}>
-            <div className="golden-text" style={{ fontSize: 28 }}>💍</div>
-            <small style={{ color: "#bbb" }}>Items Loaded</small>
-            <div className="golden-text" style={{ fontSize: 22, fontWeight: "bold" }}>
-              {items.length}
-            </div>
+          <div className="card" style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 28 }}>💍</div>
+            <small>Items</small>
+            <h3 style={{ margin: 4 }}>{items.length}</h3>
           </div>
 
-          <div className="dash-card" style={{ padding: 16, textAlign: "center" }}>
-            <div className="golden-text" style={{ fontSize: 28 }}>🧾</div>
-            <small style={{ color: "#bbb" }}>System Status</small>
-            <div style={{ color: "#4ade80", fontSize: 18, fontWeight: "bold" }}>
-              All Good
-            </div>
+          <div className="card" style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 28 }}>✅</div>
+            <small>Status</small>
+            <h3 style={{ margin: 4, color: "#22c55e" }}>All Good</h3>
           </div>
         </div>
       </div>
 
-      {/* ITEMS PREVIEW */}
-      <div className="dash-card" style={{ padding: 20 }}>
+      {/* ITEMS TABLE */}
+      <div className="card">
         <div
           style={{
             display: "flex",
@@ -222,66 +165,38 @@ export default function Dashboard() {
           }}
         >
           <div>
-            <h3 className="golden-text" style={{ margin: 0 }}>
-              🔎 Quick Items Preview
+            <h3 style={{ margin: 0, color: "#1e88e5" }}>
+              🔍 Quick Items Preview
             </h3>
-            <p style={{ color: "#b0b0b0", fontSize: 13 }}>
-              First 10 items (quick check)
-            </p>
+            <small>First 10 items</small>
           </div>
 
-          <button
-            onClick={() => setShowList((prev) => !prev)}
-            style={{
-              background: showList ? "#6c757d" : "#0d6efd",
-              color: "white",
-              padding: "6px 12px",
-              borderRadius: 7,
-              border: "none",
-              cursor: "pointer",
-              fontSize: 13,
-            }}
-          >
+          <button onClick={() => setShowList(!showList)}>
             {showList ? "Hide ▲" : "Show ▼"}
           </button>
         </div>
 
         {showList && (
-          <div
-            style={{
-              border: "1px solid #2a2a2a",
-              borderRadius: 8,
-              maxHeight: 260,
-              overflow: "auto",
-            }}
-          >
-            <table
-              className="dash-table"
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                background: "rgba(0,0,0,0.45)",
-                fontSize: 14,
-              }}
-            >
+          <div style={{ maxHeight: 260, overflow: "auto" }}>
+            <table className="invoice-table">
               <thead>
-                <tr style={{ background: "rgba(255,255,255,0.08)" }}>
-                  <th style={{ padding: 8, textAlign: "left" }}>Code</th>
-                  <th style={{ padding: 8, textAlign: "left" }}>Name</th>
+                <tr>
+                  <th>Code</th>
+                  <th>Name</th>
                 </tr>
               </thead>
               <tbody>
                 {items.length === 0 ? (
                   <tr>
-                    <td colSpan={2} style={{ textAlign: "center", padding: 15 }}>
-                      No items found.
+                    <td colSpan="2" style={{ textAlign: "center" }}>
+                      No items found
                     </td>
                   </tr>
                 ) : (
-                  items.map((item) => (
-                    <tr key={item.id}>
-                      <td style={{ padding: 8 }}>{item.code}</td>
-                      <td style={{ padding: 8 }}>{item.name}</td>
+                  items.map((i) => (
+                    <tr key={i.id}>
+                      <td>{i.code}</td>
+                      <td>{i.name}</td>
                     </tr>
                   ))
                 )}
