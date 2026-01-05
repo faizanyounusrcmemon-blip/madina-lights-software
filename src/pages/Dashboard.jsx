@@ -15,8 +15,13 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [showList, setShowList] = useState(false);
   const [lastBackup, setLastBackup] = useState("");
+  const [backupProgress, setBackupProgress] = useState(0);
+  const [isBackingUp, setIsBackingUp] = useState(false);
   const containerRef = useRef(null);
 
+  // ==============================
+  // Load Last Backup Date
+  // ==============================
   useEffect(() => {
     loadLastBackup();
   }, []);
@@ -35,6 +40,9 @@ export default function Dashboard() {
     }
   }
 
+  // ==============================
+  // Load Items
+  // ==============================
   useEffect(() => {
     const fetchData = async () => {
       if (!supabase) {
@@ -56,6 +64,9 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
+  // ==============================
+  // Hide List on Outside Click
+  // ==============================
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
@@ -66,6 +77,48 @@ export default function Dashboard() {
     return () =>
       document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // ==============================
+  // Take Backup Function
+  // ==============================
+  async function takeBackup() {
+    const pwd = prompt("Enter backup password:");
+    if (!pwd) return;
+    if (pwd !== "8515") {
+      alert("❌ Incorrect Password!");
+      return;
+    }
+
+    setBackupProgress(0);
+    setIsBackingUp(true);
+
+    const int = setInterval(() => {
+      setBackupProgress((p) => (p >= 90 ? 90 : p + 5));
+    }, 150);
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/backup`, {
+        method: "POST",
+      });
+      const data = await res.json();
+
+      clearInterval(int);
+      setBackupProgress(100);
+
+      setTimeout(() => {
+        setBackupProgress(0);
+        setIsBackingUp(false);
+        loadLastBackup(); // Refresh last backup
+      }, 700);
+
+      alert(data.success ? "✅ Backup Completed!" : "❌ " + data.error);
+    } catch (err) {
+      clearInterval(int);
+      setBackupProgress(0);
+      setIsBackingUp(false);
+      alert("❌ Backup failed: " + err.message);
+    }
+  }
 
   if (loading)
     return <div style={{ padding: 30 }}>⏳ Dashboard loading...</div>;
@@ -83,7 +136,7 @@ export default function Dashboard() {
       style={{
         padding: 24,
         minHeight: "100vh",
-        background: "linear-gradient(to bottom, #d0f0ff, #e6f7ff)", // light blue background
+        background: "linear-gradient(to bottom, #d0f0ff, #e6f7ff)",
         fontFamily: "Inter, system-ui, sans-serif",
         transition: "background 0.5s ease",
       }}
@@ -106,9 +159,7 @@ export default function Dashboard() {
           <h2 style={{ margin: 0 }}>💡 Madina Lights 💡 Dashboard</h2>
           <small>System overview & status</small>
         </div>
-        <div style={{ fontSize: 13, opacity: 0.9 }}>
-          Software by Faizan Younus
-        </div>
+        <div style={{ fontSize: 13, opacity: 0.9 }}>Software by Faizan Younus</div>
       </div>
 
       {/* TOP CARDS */}
@@ -120,26 +171,70 @@ export default function Dashboard() {
           marginBottom: 22,
         }}
       >
+        {/* LAST BACKUP CARD */}
         <div
           className="card"
           style={{
-            background: "#e0f7fa", // light blue card background
+            background: "#e0f7fa",
             borderRadius: 16,
             padding: 18,
             boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+            position: "relative",
           }}
         >
-          <h3 style={{ marginTop: 0, color: "#1e88e5" }}>
-            ☁ Last Backup
-          </h3>
+          <h3 style={{ marginTop: 0, color: "#1e88e5" }}>☁ Last Backup</h3>
           <p style={{ fontSize: 18, fontWeight: "bold" }}>
             {lastBackup || "No backup found"}
           </p>
-          <small style={{ color: "#6b7280" }}>
-            Your data is protected safely
-          </small>
+          <small style={{ color: "#6b7280" }}>Your data is protected safely</small>
+
+          {/* BACKUP BUTTON */}
+          <div style={{ marginTop: 12 }}>
+            <button
+              onClick={takeBackup}
+              disabled={isBackingUp}
+              style={{
+                background: isBackingUp ? "#6c757d" : "#0d6efd",
+                color: "white",
+                padding: "6px 12px",
+                fontSize: 14,
+                borderRadius: 8,
+                cursor: "pointer",
+                border: "none",
+                fontWeight: "bold",
+                transition: "all 0.3s ease",
+              }}
+            >
+              ☁ {isBackingUp ? "Backing Up..." : "Backup Now"}
+            </button>
+
+            {/* PROGRESS BAR */}
+            {isBackingUp && (
+              <div
+                style={{
+                  width: "100%",
+                  height: 6,
+                  background: "#ccc",
+                  borderRadius: 4,
+                  marginTop: 6,
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    width: `${backupProgress}%`,
+                    height: "100%",
+                    background: "#28a745",
+                    borderRadius: 4,
+                    transition: "0.2s",
+                  }}
+                />
+              </div>
+            )}
+          </div>
         </div>
 
+        {/* OTHER STATUS CARDS */}
         <div
           style={{
             display: "grid",
@@ -183,7 +278,7 @@ export default function Dashboard() {
       <div
         className="card"
         style={{
-          background: "#e0f7fa", // light blue background for table card
+          background: "#e0f7fa",
           borderRadius: 16,
           padding: 18,
           boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
@@ -197,9 +292,7 @@ export default function Dashboard() {
           }}
         >
           <div>
-            <h3 style={{ margin: 0, color: "#1e88e5" }}>
-              🔍 Quick Items Preview
-            </h3>
+            <h3 style={{ margin: 0, color: "#1e88e5" }}>🔍 Quick Items Preview</h3>
             <small>First 10 items</small>
           </div>
 
