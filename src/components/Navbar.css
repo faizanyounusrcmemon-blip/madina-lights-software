@@ -1,5 +1,5 @@
 /* =========================================================
-   🌟 PREMIUM NAVBAR – LIGHT BLUE THEME
+   🌟 PREMIUM NAVBAR – LIGHT BLUE THEME (UPDATED)
    ========================================================= */
 
 .topbar {
@@ -59,9 +59,8 @@
   position: absolute;
   top: calc(100% + 10px);
   left: 0;
-  min-width: 200px;
+  min-width: 210px;
   background: #ffffff;
-  color: #1e3a8a;
   border-radius: 12px;
   padding: 6px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
@@ -72,7 +71,7 @@
   border: 1px solid #dbeafe;
 }
 
-/* DROPDOWN BUTTON */
+/* 🔥 DROPDOWN LIST ITEMS – PURE BLACK */
 .menu-list button {
   background: transparent;
   border: none;
@@ -80,15 +79,16 @@
   padding: 10px 14px;
   font-size: 14px;
   cursor: pointer;
-  transition: 0.2s;
-  color: #1e40af;
-  font-weight: 500;
+  transition: all 0.2s ease;
+  color: #000000;          /* ✅ BLACK TEXT */
+  font-weight: 600;
   border-radius: 8px;
 }
 
+/* 🔥 HOVER – STILL BLACK */
 .menu-list button:hover {
   background: #e0f2fe;
-  color: #000;
+  color: #000000;          /* ✅ BLACK ON HOVER */
   transform: translateX(4px);
 }
 
@@ -105,11 +105,11 @@
   background: #22c55e;
   padding: 5px 9px;
   border-radius: 6px;
-  color: #fff;
+  color: #ffffff;
   font-weight: 600;
 }
 
-/* BUTTONS */
+/* LOGOUT BUTTON */
 .logout-btn {
   background: #ef4444;
   border: none;
