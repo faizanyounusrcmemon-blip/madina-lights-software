@@ -103,88 +103,237 @@ export default function Dashboard() {
     }
   }
 
-  if (loading) return <div className="page-loading">⏳ Loading...</div>;
-  if (error) return <div className="page-error">❌ {error}</div>;
+  if (loading)
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          color: "#ffca57",
+          fontSize: 24,
+        }}
+      >
+        ⏳ Loading...
+      </div>
+    );
+  if (error)
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          color: "#ff5555",
+          fontSize: 20,
+        }}
+      >
+        ❌ {error}
+      </div>
+    );
 
   return (
-    <div ref={containerRef} className="page-wrapper">
+    <div
+      ref={containerRef}
+      style={{
+        fontFamily: "Inter, sans-serif",
+        padding: 20,
+        background: "#0e0e0e",
+        minHeight: "100vh",
+        color: "#fff",
+      }}
+    >
       {/* HEADER */}
-      <div className="dashboard-header">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 20,
+          flexWrap: "wrap",
+        }}
+      >
         <div>
-          <h2>💡 Madina Lights Dashboard</h2>
-          <small>System overview</small>
+          <h2 style={{ color: "#ffca57", margin: 0 }}>💡 Madina Lights Dashboard</h2>
+          <small style={{ color: "#aaa" }}>System overview</small>
         </div>
-        <small>Software by Faizan Younus</small>
+        <small style={{ color: "#888" }}>Software by Faizan Younus</small>
       </div>
 
       {/* CARDS */}
-      <div className="dashboard-grid">
-        <div className="card dark-card">
-          <h3>☁ Last Backup</h3>
-          <p className="big-text">{lastBackup || "No backup found"}</p>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: 20,
+          marginBottom: 20,
+        }}
+      >
+        <div
+          style={{
+            background: "#1a1a1a",
+            borderRadius: 12,
+            padding: 20,
+            position: "relative",
+            boxShadow: "0 5px 15px rgba(0,0,0,0.5)",
+          }}
+        >
+          <h3 style={{ margin: 0, color: "#ffca57" }}>☁ Last Backup</h3>
+          <p style={{ fontSize: 22, fontWeight: "bold", margin: "10px 0" }}>
+            {lastBackup || "No backup found"}
+          </p>
 
           <button
-            className="primary-btn"
             onClick={takeBackup}
             disabled={isBackingUp}
+            style={{
+              width: "100%",
+              padding: "10px 0",
+              border: "none",
+              borderRadius: 8,
+              fontWeight: "bold",
+              fontSize: 16,
+              color: "#fff",
+              background: isBackingUp
+                ? "linear-gradient(90deg,#aaa,#888)"
+                : "linear-gradient(90deg,#ffb400,#ff6a00)",
+              cursor: isBackingUp ? "not-allowed" : "pointer",
+              boxShadow: "0 5px 10px rgba(0,0,0,0.5)",
+              transition: "0.3s all",
+              marginBottom: 10,
+            }}
           >
-            ☁ {isBackingUp ? "Backing Up..." : "Backup Now"}
+            {isBackingUp ? `Backing Up... ${backupProgress}%` : "Backup Now"}
           </button>
 
           {isBackingUp && (
-            <div className="progress-bar">
+            <div
+              style={{
+                width: "100%",
+                height: 8,
+                borderRadius: 4,
+                background: "#333",
+                overflow: "hidden",
+              }}
+            >
               <div
-                className="progress-fill"
-                style={{ width: `${backupProgress}%` }}
+                style={{
+                  height: "100%",
+                  width: `${backupProgress}%`,
+                  background: "#0bd46e",
+                  transition: "width 0.2s",
+                }}
               />
             </div>
           )}
         </div>
 
-        <div className="dashboard-mini">
-          <div className="card dark-card center">
-            <div className="icon">💡</div>
-            <small>Items</small>
-            <h3>{items.length}</h3>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 20,
+          }}
+        >
+          <div
+            style={{
+              background: "#1a1a1a",
+              borderRadius: 12,
+              padding: 20,
+              textAlign: "center",
+              boxShadow: "0 5px 15px rgba(0,0,0,0.5)",
+            }}
+          >
+            <div style={{ fontSize: 28, marginBottom: 5 }}>💡</div>
+            <small style={{ color: "#aaa" }}>Items</small>
+            <h3 style={{ margin: "5px 0", color: "#0bd46e" }}>{items.length}</h3>
           </div>
 
-          <div className="card dark-card center">
-            <div className="icon">✅</div>
-            <small>Status</small>
-            <h3 className="success">All Good</h3>
+          <div
+            style={{
+              background: "#1a1a1a",
+              borderRadius: 12,
+              padding: 20,
+              textAlign: "center",
+              boxShadow: "0 5px 15px rgba(0,0,0,0.5)",
+            }}
+          >
+            <div style={{ fontSize: 28, marginBottom: 5 }}>✅</div>
+            <small style={{ color: "#aaa" }}>Status</small>
+            <h3 style={{ margin: "5px 0", color: "#0bd46e" }}>All Good</h3>
           </div>
         </div>
       </div>
 
       {/* ITEMS TABLE */}
-      <div className="card dark-card">
-        <div className="card-header">
-          <h3>🔍 Quick Items Preview</h3>
+      <div
+        style={{
+          background: "#1a1a1a",
+          borderRadius: 12,
+          padding: 20,
+          boxShadow: "0 5px 15px rgba(0,0,0,0.5)",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 10,
+          }}
+        >
+          <h3 style={{ color: "#ffca57" }}>🔍 Quick Items Preview</h3>
           <button
-            className="secondary-btn"
             onClick={() => setShowList(!showList)}
+            style={{
+              padding: "6px 12px",
+              borderRadius: 6,
+              border: "none",
+              cursor: "pointer",
+              fontWeight: "bold",
+              background: "linear-gradient(90deg,#ffb400,#ff6a00)",
+              color: "#fff",
+              boxShadow: "0 3px 8px rgba(0,0,0,0.4)",
+            }}
           >
             {showList ? "Hide ▲" : "Show ▼"}
           </button>
         </div>
 
         {showList && (
-          <table className="invoice-table">
-            <thead>
-              <tr>
-                <th>Code</th>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((i) => (
-                <tr key={i.id}>
-                  <td>{i.code}</td>
-                  <td>{i.name}</td>
+          <div style={{ overflowX: "auto" }}>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                textAlign: "left",
+                fontSize: 14,
+              }}
+            >
+              <thead style={{ background: "#222", color: "#ffca57" }}>
+                <tr>
+                  <th style={{ padding: "8px 12px" }}>Code</th>
+                  <th style={{ padding: "8px 12px" }}>Name</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {items.map((i) => (
+                  <tr
+                    key={i.id}
+                    style={{
+                      borderBottom: "1px solid #333",
+                      transition: "0.2s all",
+                    }}
+                  >
+                    <td style={{ padding: "6px 12px" }}>{i.code}</td>
+                    <td style={{ padding: "6px 12px" }}>{i.name}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
