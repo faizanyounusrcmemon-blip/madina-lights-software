@@ -2,7 +2,7 @@
 //   STOCK REPORT (Search + Rate + Amount FINAL)
 // ===============================================
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 export default function StockReport({ onNavigate }) {
   const [rows, setRows] = useState([]);
@@ -11,6 +11,9 @@ export default function StockReport({ onNavigate }) {
 
   const API = import.meta.env.VITE_BACKEND_URL;
 
+  // ===============================
+  // LOAD STOCK
+  // ===============================
   async function loadStock() {
     setLoading(true);
     try {
@@ -35,16 +38,19 @@ export default function StockReport({ onNavigate }) {
     // eslint-disable-next-line
   }, []);
 
-  /* ===============================
-     🔍 SEARCH FILTER
-  =============================== */
-  const filteredRows = rows.filter((r) => {
-    const q = search.toLowerCase();
-    return (
-      (r.barcode && r.barcode.toLowerCase().includes(q)) ||
-      (r.item_name && r.item_name.toLowerCase().includes(q))
-    );
-  });
+  // ===============================
+  // 🔍 SEARCH FILTER (SAFE)
+  // ===============================
+  const filteredRows = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return rows;
+
+    return rows.filter((r) => {
+      const barcode = String(r.barcode || "").toLowerCase();
+      const name = String(r.item_name || "").toLowerCase();
+      return barcode.includes(q) || name.includes(q);
+    });
+  }, [rows, search]);
 
   return (
     <div className="container-fluid text-light py-3" style={{ fontFamily: "Inter" }}>
@@ -54,9 +60,9 @@ export default function StockReport({ onNavigate }) {
         style={{
           padding: "8px 18px",
           border: "none",
-          borderRadius: "8px",
+          borderRadius: 8,
           fontWeight: "bold",
-          fontSize: "14px",
+          fontSize: 14,
           background: "linear-gradient(90deg,#ffb400,#ff6a00)",
           color: "#fff",
           boxShadow: "0 3px 10px rgba(0,0,0,0.5)",
@@ -139,9 +145,14 @@ export default function StockReport({ onNavigate }) {
 
                 <tbody>
                   {filteredRows.map((r, i) => {
-                    const rate = Number(r.rate || 0);
                     const qty = Number(r.stock_qty || 0);
-                    const amount = rate * qty;
+                    const rate = Number(r.rate || 0);
+
+                    // ✅ backend amount preferred, fallback safe
+                    const amount =
+                      r.amount !== undefined
+                        ? Number(r.amount)
+                        : qty * rate;
 
                     return (
                       <tr key={i}>
@@ -164,7 +175,10 @@ export default function StockReport({ onNavigate }) {
 
                         <td
                           className="text-end"
-                          style={{ fontWeight: "bold", color: "#00e5ff" }}
+                          style={{
+                            fontWeight: "bold",
+                            color: "#00e5ff",
+                          }}
                         >
                           {amount.toLocaleString()}
                         </td>
