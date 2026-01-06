@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./Navbar.css";
 
 export default function Navbar({ onNavigate = () => {} }) {
   const [openMenu, setOpenMenu] = useState(null);
@@ -32,136 +31,216 @@ export default function Navbar({ onNavigate = () => {} }) {
   };
 
   return (
-    <div className="topbar" ref={navRef}>
-      <div className="nav-left">
-
+    <div
+      ref={navRef}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        background: "#1a1a2e",
+        padding: "10px 20px",
+        color: "#fff",
+        fontFamily: "Inter, sans-serif",
+        flexWrap: "wrap",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+      }}
+    >
+      {/* LEFT MENUS */}
+      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
         {/* BRAND */}
         <div
-          className="brand"
-          style={{ cursor: "pointer" }}
+          style={{
+            fontWeight: "bold",
+            fontSize: 18,
+            color: "linear-gradient(90deg,#ffb400,#ff6a00)",
+            cursor: "pointer",
+            marginRight: 20,
+            padding: "4px 8px",
+            borderRadius: 6,
+            background: "linear-gradient(90deg,#ff6a00,#ffb400)",
+            boxShadow: "0 2px 6px rgba(255,180,0,0.5)",
+            userSelect: "none",
+          }}
           onClick={() => handleNavigate("dashboard")}
         >
           💡 Madina Lights 💡
         </div>
 
-        {/* SALES */}
-        <div className="menu">
-          <button
-            className={`menu-btn ${openMenu === "sales" ? "active" : ""}`}
-            onClick={() => toggleMenu("sales")}
+        {/* MENU COMPONENT */}
+        {[
+          {
+            key: "sales",
+            label: "🛒 Sales",
+            items: [
+              { perm: "sale_entry", label: "Sale Entry", route: "sale-entry" },
+              { perm: "sale_return", label: "Sale Return", route: "sale-return" },
+              { perm: "sale_return_detail", label: "Sale Return Detail", route: "sale-return-detail" },
+              { perm: "sale_detail", label: "Sale Detail", route: "sale-detail" },
+              { perm: "sale_item_detail", label: "Sale Item Detail", route: "sale-item-detail" },
+            ],
+          },
+          {
+            key: "purchase",
+            label: "📦 Purchase",
+            items: [
+              { perm: "purchase_entry", label: "Purchase Entry", route: "purchase-entry" },
+              { perm: "purchase_return", label: "Purchase Return", route: "purchase-return" },
+              { perm: "purchase_detail", label: "Purchase Detail", route: "purchase-detail" },
+              { perm: "purchase_item_detail", label: "Purchase Item Detail", route: "purchase-item-detail" },
+            ],
+          },
+          {
+            key: "master",
+            label: "📇 Master",
+            items: [
+              { perm: "item_profile", label: "Item Profile", route: "item-profile" },
+              { perm: "customer_profile", label: "Customer Profile", route: "customer-profile" },
+              { perm: "manage_users", label: "Manage Users", route: "manage-users" },
+              { perm: "create_user", label: "➕ Create User", route: "create-user" },
+            ],
+          },
+          {
+            key: "openingStock",
+            label: "🧊 Opening Stock",
+            items: [
+              { perm: "opening_stock_generate", label: "📦 Archive & Opening Stock", route: "archive-stock" },
+              { perm: "opening_stock_generate", label: "📸 Snapshot Report", route: "snapshot-report" },
+              { perm: "opening_stock_generate", label: "📸 Snapshot History", route: "snapshot-history" },
+              { perm: "memory_status", label: "📊 Memory Status", route: "memory-status" },
+            ],
+          },
+          {
+            key: "reports",
+            label: "📊 Reports",
+            items: [
+              { perm: "stock_report", label: "Stock Report", route: "stock-report" },
+              { perm: "stock_ledger", label: "Stock Ledger", route: "stock-ledger" },
+              { perm: "sale_report", label: "Sales Profit Report", route: "sale-report" },
+              { perm: "monthly_report", label: "Monthly Graph Report", route: "monthly-report" },
+              { perm: "month_wise_summary", label: "📦 Month Wise Summary", route: "month-wise-summary" },
+              { perm: "day_wise_sale_report", label: "📅 Day Wise Sale Report", route: "day-wise-sale-report" },
+              { perm: "Rate_Difference_report", label: "Rate Difference Report", route: "rate-difference-report" },
+              { perm: "deleted_invoice_report", label: "🗑 Deleted Invoice Report", route: "deleted-invoice-report" },
+              { perm: "purchase_delete_report", label: "🗑 Deleted Purchase Report", route: "purchase-delete-report" },
+            ],
+          },
+        ].map((menu) => (
+          <div
+            key={menu.key}
+            style={{ position: "relative", marginRight: 10 }}
+            className="menu"
           >
-            🛒 Sales
-          </button>
+            <button
+              style={{
+                padding: "6px 14px",
+                borderRadius: 6,
+                border: "none",
+                cursor: "pointer",
+                fontWeight: "bold",
+                background: openMenu === menu.key ? "#ffb400" : "#222",
+                color: openMenu === menu.key ? "#000" : "#fff",
+                transition: "0.3s all",
+              }}
+              onClick={() => toggleMenu(menu.key)}
+            >
+              {menu.label}
+            </button>
 
-          {openMenu === "sales" && (
-            <div className="menu-list">
-              {can("sale_entry") && <button onClick={() => handleNavigate("sale-entry")}>Sale Entry</button>}
-              {can("sale_return") && <button onClick={() => handleNavigate("sale-return")}>Sale Return</button>}
-              {can("sale_return_detail") && <button onClick={() => handleNavigate("sale-return-detail")}>Sale Return Detail</button>}
-              {can("sale_detail") && <button onClick={() => handleNavigate("sale-detail")}>Sale Detail</button>}
-              {can("sale_item_detail") && <button onClick={() => handleNavigate("sale-item-detail")}>Sale Item Detail</button>}
-            </div>
-          )}
-        </div>
-
-        {/* PURCHASE */}
-        <div className="menu">
-          <button
-            className={`menu-btn ${openMenu === "purchase" ? "active" : ""}`}
-            onClick={() => toggleMenu("purchase")}
-          >
-            📦 Purchase
-          </button>
-
-          {openMenu === "purchase" && (
-            <div className="menu-list">
-              {can("purchase_entry") && <button onClick={() => handleNavigate("purchase-entry")}>Purchase Entry</button>}
-              {can("purchase_return") && <button onClick={() => handleNavigate("purchase-return")}>Purchase Return</button>}
-              {can("purchase_detail") && <button onClick={() => handleNavigate("purchase-detail")}>Purchase Detail</button>}
-              {can("purchase_item_detail") && <button onClick={() => handleNavigate("purchase-item-detail")}>Purchase Item Detail</button>}
-            </div>
-          )}
-        </div>
-
-        {/* MASTER */}
-        <div className="menu">
-          <button
-            className={`menu-btn ${openMenu === "master" ? "active" : ""}`}
-            onClick={() => toggleMenu("master")}
-          >
-            📇 Master
-          </button>
-
-          {openMenu === "master" && (
-            <div className="menu-list">
-              {can("item_profile") && <button onClick={() => handleNavigate("item-profile")}>Item Profile</button>}
-              {can("customer_profile") && <button onClick={() => handleNavigate("customer-profile")}>Customer Profile</button>}
-              {can("manage_users") && <button onClick={() => handleNavigate("manage-users")}>Manage Users</button>}
-              {can("create_user") && <button onClick={() => handleNavigate("create-user")}>➕ Create User</button>}
-            </div>
-          )}
-        </div>
-
-        {/* OPENING STOCK */}
-        <div className="menu">
-          <button
-            className={`menu-btn ${openMenu === "openingStock" ? "active" : ""}`}
-            onClick={() => toggleMenu("openingStock")}
-          >
-            🧊 Opening Stock
-          </button>
-
-          {openMenu === "openingStock" && (
-            <div className="menu-list">
-              {can("opening_stock_generate") && <button onClick={() => handleNavigate("archive-stock")}>📦 Archive & Opening Stock</button>}
-              {can("opening_stock_generate") && <button onClick={() => handleNavigate("snapshot-report")}>📸 Snapshot Report</button>}
-              {can("opening_stock_generate") && <button onClick={() => handleNavigate("snapshot-history")}>📸 Snapshot History</button>}
-              {can("memory_status") && <button onClick={() => handleNavigate("memory-status")}>📊 Memory Status</button>}
-            </div>
-          )}
-        </div>
-
-        {/* REPORTS */}
-        <div className="menu">
-          <button
-            className={`menu-btn ${openMenu === "reports" ? "active" : ""}`}
-            onClick={() => toggleMenu("reports")}
-          >
-            📊 Reports
-          </button>
-
-          {openMenu === "reports" && (
-            <div className="menu-list">
-              {can("stock_report") && <button onClick={() => handleNavigate("stock-report")}>Stock Report</button>}
-              {can("stock_ledger") && <button onClick={() => handleNavigate("stock-ledger")}>Stock Ledger</button>}
-              {can("sale_report") && <button onClick={() => handleNavigate("sale-report")}>Sales Profit Report</button>}
-              {can("monthly_report") && <button onClick={() => handleNavigate("monthly-report")}>Monthly Graph Report</button>}
-              {can("month_wise_summary") && <button onClick={() => handleNavigate("month-wise-summary")}>📦 Month Wise Summary</button>}
-              {can("day_wise_sale_report") && <button onClick={() => handleNavigate("day-wise-sale-report")}>📅 Day Wise Sale Report</button>}
-              {can("Rate_Difference_report") && <button onClick={() => handleNavigate("rate-difference-report")}>Rate Difference Report</button>}
-              {can("deleted_invoice_report") && <button onClick={() => handleNavigate("deleted-invoice-report")}>🗑 Deleted Invoice Report</button>}
-              {can("purchase_delete_report") && <button onClick={() => handleNavigate("purchase-delete-report")}>🗑 Deleted Purchase Report</button>}
-            </div>
-          )}
-        </div>
+            {openMenu === menu.key && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  background: "#222",
+                  borderRadius: 6,
+                  padding: 8,
+                  minWidth: 180,
+                  boxShadow: "0 4px 10px rgba(0,0,0,0.6)",
+                  zIndex: 100,
+                  animation: "fadeIn 0.2s ease",
+                }}
+              >
+                {menu.items
+                  .filter((i) => can(i.perm))
+                  .map((i) => (
+                    <button
+                      key={i.route}
+                      onClick={() => handleNavigate(i.route)}
+                      style={{
+                        display: "block",
+                        width: "100%",
+                        padding: "6px 10px",
+                        margin: "2px 0",
+                        borderRadius: 4,
+                        background: "#111",
+                        color: "#ffca57",
+                        border: "none",
+                        cursor: "pointer",
+                        textAlign: "left",
+                        fontWeight: "500",
+                        transition: "0.2s all",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.background = "#ffb400")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.background = "#111")
+                      }
+                    >
+                      {i.label}
+                    </button>
+                  ))}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
 
       {/* RIGHT ACTIONS */}
-      <div className="right-actions">
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <button
-          className="logout-btn"
-          style={{ marginRight: "10px", background: "#6f42c1" }}
+          style={{
+            padding: "6px 14px",
+            borderRadius: 6,
+            border: "none",
+            fontWeight: "bold",
+            cursor: "pointer",
+            background: "linear-gradient(90deg,#6f42c1,#a866f9)",
+            color: "#fff",
+            boxShadow: "0 3px 8px rgba(0,0,0,0.5)",
+          }}
           onClick={() => handleNavigate("restore")}
         >
           🔄 Restore
         </button>
 
-        <div className="status">
+        <div
+          style={{
+            padding: "6px 12px",
+            borderRadius: 6,
+            background: "#333",
+            fontWeight: "bold",
+            color: "#0bd46e",
+          }}
+        >
           🟢 {user?.username || "User"} ({user?.role || "guest"})
         </div>
 
         <button
-          className="logout-btn"
+          style={{
+            padding: "6px 14px",
+            borderRadius: 6,
+            border: "none",
+            fontWeight: "bold",
+            cursor: "pointer",
+            background: "linear-gradient(90deg,#ff6a00,#ffb400)",
+            color: "#000",
+            boxShadow: "0 3px 8px rgba(0,0,0,0.5)",
+          }}
           onClick={() => {
             sessionStorage.clear();
             localStorage.clear();
