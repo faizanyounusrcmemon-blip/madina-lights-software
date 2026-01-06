@@ -1,5 +1,5 @@
 // ===============================================
-//   STOCK REPORT (Professional UI Version)
+//   STOCK REPORT (Search + Rate + Amount FINAL)
 // ===============================================
 
 import { useEffect, useState } from "react";
@@ -7,24 +7,19 @@ import { useEffect, useState } from "react";
 export default function StockReport({ onNavigate }) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState("");
 
-  // ✅ Vite env (make sure .env me ye line ho)
-  // VITE_BACKEND_URL="https://khadija-jewellery.vercel.app"
   const API = import.meta.env.VITE_BACKEND_URL;
 
   async function loadStock() {
     setLoading(true);
-
     try {
       const res = await fetch(`${API}/api/stock-report`);
       const data = await res.json();
 
-      console.log("STOCK REPORT RESPONSE 👉", data); // ✅ Debug
-
       if (!data.success) {
         alert("❌ Error loading stock: " + data.error);
       } else {
-        // data.rows = [{ barcode, item_name, stock_qty }]
         setRows(data.rows || []);
       }
     } catch (err) {
@@ -37,15 +32,23 @@ export default function StockReport({ onNavigate }) {
 
   useEffect(() => {
     loadStock();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, []);
 
+  /* ===============================
+     🔍 SEARCH FILTER
+  =============================== */
+  const filteredRows = rows.filter((r) => {
+    const q = search.toLowerCase();
+    return (
+      (r.barcode && r.barcode.toLowerCase().includes(q)) ||
+      (r.item_name && r.item_name.toLowerCase().includes(q))
+    );
+  });
+
   return (
-    <div
-      className="container-fluid text-light py-3"
-      style={{ fontFamily: "Inter" }}
-    >
-      {/* EXIT BUTTON */}
+    <div className="container-fluid text-light py-3" style={{ fontFamily: "Inter" }}>
+      {/* EXIT */}
       <button
         onClick={() => onNavigate("dashboard")}
         style={{
@@ -54,19 +57,19 @@ export default function StockReport({ onNavigate }) {
           borderRadius: "8px",
           fontWeight: "bold",
           fontSize: "14px",
-          background: "linear-gradient(90deg, #ffb400, #ff6a00)",
+          background: "linear-gradient(90deg,#ffb400,#ff6a00)",
           color: "#fff",
           boxShadow: "0 3px 10px rgba(0,0,0,0.5)",
           cursor: "pointer",
-          marginBottom: "12px",
+          marginBottom: 12,
         }}
       >
         ⬅ Exit
       </button>
 
-      {/* TITLE + REFRESH BUTTON */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2 style={{ color: "#ffca57", fontSize: "26px" }}>📦 Stock Report</h2>
+      {/* HEADER */}
+      <div className="d-flex justify-content-between align-items-center mb-2">
+        <h2 style={{ color: "#ffca57" }}>📦 Stock Report</h2>
 
         <button
           onClick={loadStock}
@@ -74,7 +77,7 @@ export default function StockReport({ onNavigate }) {
           style={{
             padding: "7px 16px",
             border: "none",
-            borderRadius: "8px",
+            borderRadius: 8,
             fontWeight: "bold",
             background: "#0bd46e",
             color: "#000",
@@ -87,21 +90,35 @@ export default function StockReport({ onNavigate }) {
         </button>
       </div>
 
-      {/* DATA CARD */}
+      {/* 🔍 SEARCH BAR */}
+      <input
+        type="text"
+        placeholder="🔍 Search by barcode or item name..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{
+          width: "100%",
+          padding: "10px 14px",
+          borderRadius: 8,
+          border: "1px solid #555",
+          background: "#111",
+          color: "#fff",
+          marginBottom: 10,
+        }}
+      />
+
+      {/* TABLE */}
       <div
         className="card bg-dark border-secondary"
         style={{
-          borderRadius: "10px",
+          borderRadius: 10,
           boxShadow: "0 0 12px rgba(0,0,0,0.4)",
         }}
       >
         <div className="card-body p-2">
-          {rows.length > 0 ? (
+          {filteredRows.length > 0 ? (
             <div className="table-responsive" style={{ maxHeight: "75vh" }}>
-              <table
-                className="table table-dark table-bordered table-sm mb-0"
-                style={{ borderColor: "#555" }}
-              >
+              <table className="table table-dark table-bordered table-sm mb-0">
                 <thead
                   style={{
                     position: "sticky",
@@ -112,41 +129,55 @@ export default function StockReport({ onNavigate }) {
                   }}
                 >
                   <tr>
-                    <th style={{ width: "140px" }}>Barcode</th>
+                    <th>Barcode</th>
                     <th>Item Name</th>
-                    <th className="text-end" style={{ width: "120px" }}>
-                      Stock Qty
-                    </th>
+                    <th className="text-end">Stock</th>
+                    <th className="text-end">Rate</th>
+                    <th className="text-end">Amount</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  {rows.map((r, i) => (
-                    <tr key={i}>
-                      <td>{r.barcode}</td>
+                  {filteredRows.map((r, i) => {
+                    const rate = Number(r.rate || 0);
+                    const qty = Number(r.stock_qty || 0);
+                    const amount = rate * qty;
 
-                      {/* ✅ Agar backend se null/empty aaye to "-" dikhao */}
-                      <td>{r.item_name && r.item_name.trim() !== "" ? r.item_name : "-"}</td>
+                    return (
+                      <tr key={i}>
+                        <td>{r.barcode}</td>
+                        <td>{r.item_name || "-"}</td>
 
-                      <td
-                        className="text-end"
-                        style={{
-                          fontWeight: "bold",
-                          color:
-                            Number(r.stock_qty) > 0 ? "#00ff66" : "#ff5555",
-                        }}
-                      >
-                        {r.stock_qty}
-                      </td>
-                    </tr>
-                  ))}
+                        <td
+                          className="text-end"
+                          style={{
+                            fontWeight: "bold",
+                            color: qty > 0 ? "#00ff66" : "#ff5555",
+                          }}
+                        >
+                          {qty}
+                        </td>
+
+                        <td className="text-end">
+                          {rate.toLocaleString()}
+                        </td>
+
+                        <td
+                          className="text-end"
+                          style={{ fontWeight: "bold", color: "#00e5ff" }}
+                        >
+                          {amount.toLocaleString()}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           ) : (
             !loading && (
               <p className="text-warning text-center py-3">
-                No stock available.
+                No matching stock found.
               </p>
             )
           )}
