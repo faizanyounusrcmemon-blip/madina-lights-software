@@ -1,5 +1,5 @@
 /* =========================================================
-   🌟 PREMIUM NAVBAR – LIGHT BLUE THEME (FINAL)
+   🌟 PREMIUM NAVBAR – LIGHT BLUE THEME (FINAL CLEAN)
    ========================================================= */
 
 .topbar {
@@ -39,7 +39,7 @@
 /* MENU BUTTON */
 .menu-btn {
   background: rgba(255,255,255,0.15);
-  color: #ffffff;                 /* DEFAULT WHITE */
+  color: #ffffff; /* default white */
   border: none;
   font-size: 14px;
   cursor: pointer;
@@ -55,10 +55,10 @@
   transform: translateY(-1px);
 }
 
-/* 🔥 ACTIVE / OPEN MENU NAME BLACK */
+/* 🔥 ACTIVE / OPEN MENU */
 .menu-btn.active {
   background: #ffffff;
-  color: #000000;                 /* ✅ BLACK NAME */
+  color: #000000; /* black text */
   box-shadow: 0 6px 14px rgba(0,0,0,0.25);
 }
 
@@ -79,7 +79,7 @@
   border: 1px solid #dbeafe;
 }
 
-/* DROPDOWN ITEMS (NORMAL LOOK) */
+/* DROPDOWN ITEMS */
 .menu-list button {
   background: transparent;
   border: none;
@@ -105,25 +105,6 @@
   align-items: center;
   gap: 10px;
 }
-.menu-btn {
-  background: rgba(255,255,255,0.15);
-  color: #ffffff; /* default white */
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 8px 14px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  font-weight: 700;
-}
-
-/* 🔹 Active menu name black */
-.menu-btn.active {
-  background: #ffffff;
-  color: #000000; /* ✅ dropdown name black */
-  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-}
-
 
 /* STATUS */
 .status {
@@ -173,4 +154,3 @@
     transform: translateY(0);
   }
 }
-
