@@ -1,151 +1,28 @@
-/* =========================
-   Filters & Inputs
-========================= */
-.filters-bar {
-  display: flex;
-  gap: 14px;
-  background: #1e1e1e;              /* DARK */
-  padding: 14px 16px;
-  border-radius: 16px;
-  margin-bottom: 20px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-  transition: all 0.3s ease;
-}
 
-.filters-bar:hover {
-  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+:root{
+  --bg: #000;
+  --gold: #d4af37;
+  --muted: #bbb;
 }
-
-.search-box,
-.date-picker {
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid #333;
-  outline: none;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  background: #121212;              /* DARK INPUT */
-  color: #ffffff;
-}
-
-.search-box::placeholder {
-  color: #9ca3af;
-}
-
-.search-box:focus,
-.date-picker:focus {
-  border-color: #4da3ff;
-  box-shadow: 0 2px 8px rgba(77,163,255,0.4);
-}
-
-/* =========================
-   Invoice Table
-========================= */
-.invoice-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: #1e1e1e;              /* DARK TABLE */
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.45);
-  transition: all 0.3s ease;
-  color: #ffffff;
-}
-
-.invoice-table th {
-  background: linear-gradient(90deg, #4da3ff, #6ec6ff);
-  padding: 14px;
-  color: white;
-  font-weight: 600;
-  text-align: left;
-}
-
-.invoice-table td {
-  padding: 14px;
-  border-top: 1px solid #333;
-  font-size: 14px;
-}
-
-.invoice-table tr:hover td {
-  background: #2a2a2a;              /* DARK HOVER */
-  transition: background 0.3s ease;
-}
-
-/* =========================
-   Buttons
-========================= */
-.btn-edit,
-.btn-delete,
-.btn-print {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-edit {
-  background: #facc15;
-  color: #1f2937;
-}
-
-.btn-edit:hover {
-  background: #eab308;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(250,204,21,0.5);
-}
-
-.btn-delete {
-  background: #ef4444;
-  color: white;
-}
-
-.btn-delete:hover {
-  background: #dc2626;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(239,68,68,0.5);
-}
-
-.btn-print {
-  background: #3b82f6;
-  color: white;
-}
-
-.btn-print:hover {
-  background: #2563eb;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59,130,246,0.5);
-}
-
-/* =========================
-   Summary Card
-========================= */
-.summary-card {
-  background: linear-gradient(135deg, #2563eb, #4da3ff);
-  color: white;
-  padding: 22px;
-  border-radius: 18px;
-  text-align: center;
-  box-shadow: 0 12px 28px rgba(37,99,235,0.5);
-  font-weight: 700;
-  font-size: 16px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.summary-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 36px rgba(37,99,235,0.7);
-}
-
-/* =========================
-   Open Module Background
-========================= */
-.module-open {
-  background: #1e293b;              /* DARK MODULE */
-  border-radius: 16px;
-  padding: 16px;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.45);
+*{box-sizing:border-box;font-family:Inter, Arial, sans-serif}
+html,body,#root{height:100%;margin:0;padding:0;background:var(--bg);color:var(--gold)}
+.app-root{min-height:100vh;display:flex;flex-direction:column}
+.content-area{padding:24px}
+.header-title{font-size:28px;font-weight:700;letter-spacing:1px}
+.card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.04);padding:16px;border-radius:8px;color:#fff}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.03);}
+.brand{font-size:22px;font-weight:800;color:var(--gold);text-transform:uppercase}
+.nav-left{display:flex;gap:12px;align-items:center}
+.menu{position:relative}
+.menu-btn{background:transparent;border:none;color:var(--gold);padding:8px 12px;font-weight:600;cursor:pointer;border-radius:6px}
+.menu-list{position:absolute;top:44px;left:0;background:#111;border:1px solid rgba(255,255,255,0.06);min-width:220px;padding:8px;border-radius:6px;display:none;z-index:50}
+.menu:hover .menu-list{display:block}
+.menu-list button{display:block;width:100%;text-align:left;padding:8px;border:none;background:transparent;color:#fff;cursor:pointer;border-radius:4px}
+.right-actions{display:flex;gap:10px;align-items:center}
+.logout-btn{background:var(--gold);border:none;padding:8px 12px;border-radius:8px;color:#000;font-weight:700;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:18px}
+.small{font-size:13px;color:var(--muted)}
+@media(max-width:720px){
+  .topbar{flex-direction:column;gap:10px;align-items:flex-start}
+  .menu-list{position:static}
 }
