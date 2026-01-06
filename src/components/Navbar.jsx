@@ -55,12 +55,12 @@ export default function Navbar({ onNavigate = () => {} }) {
           style={{
             fontWeight: "bold",
             fontSize: 18,
-            color: "linear-gradient(90deg,#ffb400,#ff6a00)",
             cursor: "pointer",
             marginRight: 20,
             padding: "4px 8px",
             borderRadius: 6,
             background: "linear-gradient(90deg,#ff6a00,#ffb400)",
+            color: "#fff",
             boxShadow: "0 2px 6px rgba(255,180,0,0.5)",
             userSelect: "none",
           }}
@@ -128,11 +128,7 @@ export default function Navbar({ onNavigate = () => {} }) {
             ],
           },
         ].map((menu) => (
-          <div
-            key={menu.key}
-            style={{ position: "relative", marginRight: 10 }}
-            className="menu"
-          >
+          <div key={menu.key} style={{ position: "relative", marginRight: 10 }}>
             <button
               style={{
                 padding: "6px 14px",
@@ -184,9 +180,9 @@ export default function Navbar({ onNavigate = () => {} }) {
                         fontWeight: "500",
                         transition: "0.2s all",
                       }}
-                      onMouseEnter={(e) =>
-                        e.currentTarget.style.background = "#ffb400"; // Hover background
-                        e.currentTarget.style.color = "#000";         // Hover font color
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "#ffb400"; // Hover bg
+                        e.currentTarget.style.color = "#000";         // Hover font
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.background = "#111";    // Reset bg
