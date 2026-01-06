@@ -77,22 +77,23 @@ export default function Login({ onLogin }) {
           border: "1px solid rgba(200,200,200,0.25)",
           color: "#333",
           transition: "all 0.3s ease",
+          textAlign: "center",
         }}
       >
         <h2
           style={{
             margin: 0,
             marginBottom: 22,
-            textAlign: "center",
             fontWeight: 900,
             letterSpacing: 1,
             color: "#4dabf7",
+            textShadow: "1px 1px 2px #a0e7ff",
           }}
         >
           💡 Madina Lights 💡
         </h2>
 
-        <label style={{ fontSize: 14, color: "#555" }}>Username</label>
+        <label style={{ fontSize: 14, color: "#555", fontWeight: 600 }}>Username</label>
         <input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
@@ -109,10 +110,11 @@ export default function Login({ onLogin }) {
             outline: "none",
             fontSize: 14,
             transition: "all 0.3s ease",
+            boxShadow: "inset 0 1px 3px rgba(0,0,0,0.08)",
           }}
         />
 
-        <label style={{ fontSize: 14, color: "#555" }}>Password</label>
+        <label style={{ fontSize: 14, color: "#555", fontWeight: 600 }}>Password</label>
         <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
           <input
             type={showPw ? "text" : "password"}
@@ -129,6 +131,7 @@ export default function Login({ onLogin }) {
               outline: "none",
               fontSize: 14,
               transition: "all 0.3s ease",
+              boxShadow: "inset 0 1px 3px rgba(0,0,0,0.08)",
             }}
           />
           <button
@@ -157,7 +160,6 @@ export default function Login({ onLogin }) {
               marginBottom: 16,
               fontSize: 14,
               color: msg.startsWith("✅") ? "#4caf50" : "#f44336",
-              textAlign: "center",
               fontWeight: 600,
             }}
           >
