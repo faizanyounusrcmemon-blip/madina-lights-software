@@ -177,7 +177,7 @@ export default function Navbar({ onNavigate = () => {} }) {
                         margin: "2px 0",
                         borderRadius: 4,
                         background: "#111",
-                        color: "#ffca57",
+                        color: "#ffd966",
                         border: "none",
                         cursor: "pointer",
                         textAlign: "left",
@@ -185,11 +185,13 @@ export default function Navbar({ onNavigate = () => {} }) {
                         transition: "0.2s all",
                       }}
                       onMouseEnter={(e) =>
-                        (e.currentTarget.style.background = "#ffb400")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.background = "#111")
-                      }
+                        e.currentTarget.style.background = "#ffb400"; // Hover background
+                        e.currentTarget.style.color = "#000";         // Hover font color
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "#111";    // Reset bg
+                        e.currentTarget.style.color = "#ffd966";     // Reset font
+                      }}
                     >
                       {i.label}
                     </button>
