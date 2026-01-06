@@ -4,34 +4,38 @@
 .filters-bar {
   display: flex;
   gap: 14px;
-  background: #ffffff;
+  background: #1e1e1e;              /* DARK */
   padding: 14px 16px;
   border-radius: 16px;
   margin-bottom: 20px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
   transition: all 0.3s ease;
 }
 
 .filters-bar:hover {
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
 }
 
 .search-box,
 .date-picker {
   padding: 10px 14px;
   border-radius: 10px;
-  border: 1px solid #cfd8dc;
+  border: 1px solid #333;
   outline: none;
   transition: all 0.3s ease;
   font-size: 14px;
-  background: #f9fbfd;
-  color: #333;
+  background: #121212;              /* DARK INPUT */
+  color: #ffffff;
+}
+
+.search-box::placeholder {
+  color: #9ca3af;
 }
 
 .search-box:focus,
 .date-picker:focus {
   border-color: #4da3ff;
-  box-shadow: 0 2px 8px rgba(77,163,255,0.2);
+  box-shadow: 0 2px 8px rgba(77,163,255,0.4);
 }
 
 /* =========================
@@ -41,11 +45,12 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  background: #ffffff;
+  background: #1e1e1e;              /* DARK TABLE */
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45);
   transition: all 0.3s ease;
+  color: #ffffff;
 }
 
 .invoice-table th {
@@ -58,12 +63,12 @@
 
 .invoice-table td {
   padding: 14px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid #333;
   font-size: 14px;
 }
 
 .invoice-table tr:hover td {
-  background: #f1f8ff;
+  background: #2a2a2a;              /* DARK HOVER */
   transition: background 0.3s ease;
 }
 
@@ -82,48 +87,48 @@
 }
 
 .btn-edit {
-  background: #ffd54f;
-  color: #3e2723;
+  background: #facc15;
+  color: #1f2937;
 }
 
 .btn-edit:hover {
-  background: #ffca28;
+  background: #eab308;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255,213,79,0.4);
+  box-shadow: 0 4px 12px rgba(250,204,21,0.5);
 }
 
 .btn-delete {
-  background: #ef5350;
+  background: #ef4444;
   color: white;
 }
 
 .btn-delete:hover {
-  background: #e53935;
+  background: #dc2626;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(239,83,80,0.4);
+  box-shadow: 0 4px 12px rgba(239,68,68,0.5);
 }
 
 .btn-print {
-  background: #42a5f5;
+  background: #3b82f6;
   color: white;
 }
 
 .btn-print:hover {
-  background: #1e88e5;
+  background: #2563eb;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(66,165,245,0.4);
+  box-shadow: 0 4px 12px rgba(59,130,246,0.5);
 }
 
 /* =========================
    Summary Card
 ========================= */
 .summary-card {
-  background: linear-gradient(135deg, #4da3ff, #6ec6ff);
+  background: linear-gradient(135deg, #2563eb, #4da3ff);
   color: white;
   padding: 22px;
   border-radius: 18px;
   text-align: center;
-  box-shadow: 0 12px 28px rgba(77,163,255,0.4);
+  box-shadow: 0 12px 28px rgba(37,99,235,0.5);
   font-weight: 700;
   font-size: 16px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -131,16 +136,16 @@
 
 .summary-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 16px 36px rgba(77,163,255,0.5);
+  box-shadow: 0 16px 36px rgba(37,99,235,0.7);
 }
 
 /* =========================
    Open Module Background
 ========================= */
 .module-open {
-  background: #e0f7fa; /* soft light blue for open modules */
+  background: #1e293b;              /* DARK MODULE */
   border-radius: 16px;
   padding: 16px;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.45);
 }
