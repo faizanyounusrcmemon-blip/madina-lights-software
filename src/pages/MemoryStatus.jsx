@@ -11,7 +11,7 @@ export default function MemoryStatus({ onNavigate }) {
     const { data: result, error } = await supabase.rpc("get_memory_status");
 
     if (error) {
-      console.error(error);
+      console.error("RPC Error:", error);
       setData(null);
     } else {
       setData(result?.[0] || null);
@@ -45,13 +45,29 @@ export default function MemoryStatus({ onNavigate }) {
             <table className="table table-dark table-bordered mt-3">
               <tbody>
                 <tr>
-                  <th>Used Space</th>
+                  <th style={{ width: "240px" }}>Used Space</th>
                   <td>{data.used}</td>
                 </tr>
+
                 <tr>
                   <th>Remaining Space</th>
                   <td>{data.remaining}</td>
                 </tr>
+
+                <tr>
+                  <th>Total Rows (All Tables)</th>
+                  <td className="text-info fw-bold">
+                    {Number(data.total_rows).toLocaleString()}
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>Average Size per Row</th>
+                  <td className="text-warning fw-bold">
+                    {data.avg_row_size}
+                  </td>
+                </tr>
+
                 <tr>
                   <th>Approx Rows Can Be Added</th>
                   <td className="text-success fw-bold">
