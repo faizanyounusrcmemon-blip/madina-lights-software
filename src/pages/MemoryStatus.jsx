@@ -1,92 +1,104 @@
 import React, { useEffect, useState } from "react";
 import supabase from "../utils/supabaseClient";
 
-export default function MemoryStatus({ onNavigate }) {
-  const [data, setData] = useState(null);
+export default function StorageDashboard() {
+  const [summary, setSummary] = useState(null);
+  const [tables, setTables] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const loadStatus = async () => {
+  const loadData = async () => {
     setLoading(true);
 
-    const { data: result, error } = await supabase.rpc("get_memory_status");
+    // 🔹 Summary
+    const { data: s } = await supabase.rpc("get_memory_status");
+    setSummary(s?.[0]);
 
-    if (error) {
-      console.error("RPC Error:", error);
-      setData(null);
-    } else {
-      setData(result?.[0] || null);
-    }
+    // 🔹 Table-wise rows
+    const { data: t } = await supabase.rpc("get_table_rows");
+    setTables(t || []);
 
     setLoading(false);
   };
 
   useEffect(() => {
-    loadStatus();
+    loadData();
   }, []);
 
+  if (loading) {
+    return <p style={{ color: "#fff" }}>Loading...</p>;
+  }
+
+  const usedMB = parseFloat(summary.used_mb);
+  const percent = Math.round((usedMB / 500) * 100);
+
   return (
-    <div className="container-fluid py-3 text-white">
-      <button
-        onClick={() => onNavigate("dashboard")}
-        className="btn btn-warning fw-bold mb-3"
+    <div style={{ padding: 20, color: "#000" }}>
+      {/* ================= SUMMARY CARD ================= */}
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 10,
+          padding: 20,
+          maxWidth: 700,
+          boxShadow: "0 5px 20px rgba(0,0,0,0.2)",
+        }}
       >
-        ⬅ Exit
-      </button>
+        <p><b>Total Storage Limit:</b> 500 MB</p>
+        <p><b>Used Storage:</b> {summary.used_mb} MB</p>
+        <p><b>Free Storage:</b> {summary.free_mb} MB</p>
 
-      <h2 className="fw-bold text-warning">
-        📊 Supabase Database Memory (500 MB)
-      </h2>
+        {/* Progress bar */}
+        <div style={{ background: "#eee", borderRadius: 8, height: 18 }}>
+          <div
+            style={{
+              width: `${percent}%`,
+              height: "100%",
+              background: "#28a745",
+              color: "#fff",
+              fontSize: 12,
+              textAlign: "center",
+              borderRadius: 8,
+            }}
+          >
+            {percent}%
+          </div>
+        </div>
 
-      <div className="card bg-dark border-warning shadow mt-3 p-3">
-        {loading ? (
-          <p className="text-info">Loading memory status...</p>
-        ) : data ? (
-          <>
-            <table className="table table-dark table-bordered mt-3">
-              <tbody>
-                <tr>
-                  <th style={{ width: "240px" }}>Used Space</th>
-                  <td>{data.used}</td>
-                </tr>
+        <hr />
 
-                <tr>
-                  <th>Remaining Space</th>
-                  <td>{data.remaining}</td>
-                </tr>
+        <p><b>Total Rows (All Tables):</b> {summary.total_rows}</p>
+        <p><b>Average Row Size:</b> {summary.avg_row_size}</p>
+        <p style={{ color: "green", fontWeight: "bold" }}>
+          👉 Estimated More Rows Possible: {summary.approx_remaining_rows}
+        </p>
+      </div>
 
-                <tr>
-                  <th>Total Rows (All Tables)</th>
-                  <td className="text-info fw-bold">
-                    {Number(data.total_rows).toLocaleString()}
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>Average Size per Row</th>
-                  <td className="text-warning fw-bold">
-                    {data.avg_row_size}
-                  </td>
-                </tr>
-
-                <tr>
-                  <th>Approx Rows Can Be Added</th>
-                  <td className="text-success fw-bold">
-                    {Number(data.approx_remaining_rows).toLocaleString()}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <button
-              className="btn btn-outline-warning fw-bold mt-2"
-              onClick={loadStatus}
-            >
-              🔄 Refresh
-            </button>
-          </>
-        ) : (
-          <p className="text-danger">Failed to load memory data</p>
-        )}
+      {/* ================= TABLE LIST ================= */}
+      <div
+        style={{
+          marginTop: 30,
+          background: "#fff",
+          borderRadius: 10,
+          padding: 20,
+          maxWidth: 700,
+        }}
+      >
+        <table width="100%" border="1" cellPadding="8">
+          <thead style={{ background: "#222", color: "#fff" }}>
+            <tr>
+              <th align="left">Table</th>
+              <th align="right">Rows</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tables.map((t) => (
+              <tr key={t.table_name}>
+                <td>{t.table_name}</td>
+                <td align="right">{t.rows}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
