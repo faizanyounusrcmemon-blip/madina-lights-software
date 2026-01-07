@@ -9,15 +9,23 @@ export default function StorageDashboard() {
   const loadData = async () => {
     setLoading(true);
 
-    // 🔹 Summary
-    const { data: s } = await supabase.rpc("get_memory_status");
-    setSummary(s?.[0]);
+    try {
+      // 🔹 Summary
+      const { data: s, error: summaryError } = await supabase.rpc("get_memory_status");
+      if (summaryError) console.error(summaryError);
+      setSummary(s?.[0] || { used_mb: 0, free_mb: 0, total_rows: 0, avg_row_size: 0, approx_remaining_rows: 0 });
 
-    // 🔹 Table-wise rows
-    const { data: t } = await supabase.rpc("get_table_rows");
-    setTables(t || []);
-
-    setLoading(false);
+      // 🔹 Table-wise rows
+      const { data: t, error: tablesError } = await supabase.rpc("get_table_rows");
+      if (tablesError) console.error(tablesError);
+      setTables(t || []);
+    } catch (err) {
+      console.error(err);
+      setSummary({ used_mb: 0, free_mb: 0, total_rows: 0, avg_row_size: 0, approx_remaining_rows: 0 });
+      setTables([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -28,8 +36,10 @@ export default function StorageDashboard() {
     return <p style={{ color: "#fff" }}>Loading...</p>;
   }
 
-  const usedMB = parseFloat(summary.used_mb);
-  const percent = Math.round((usedMB / 500) * 100);
+  // Ensure numeric values
+  const usedMB = parseFloat(summary?.used_mb) || 0;
+  const freeMB = parseFloat(summary?.free_mb) || 0;
+  const percent = Math.round((usedMB / 500) * 100) || 0;
 
   return (
     <div style={{ padding: 20, color: "#000" }}>
@@ -44,8 +54,8 @@ export default function StorageDashboard() {
         }}
       >
         <p><b>Total Storage Limit:</b> 500 MB</p>
-        <p><b>Used Storage:</b> {summary.used_mb} MB</p>
-        <p><b>Free Storage:</b> {summary.free_mb} MB</p>
+        <p><b>Used Storage:</b> {usedMB.toFixed(2)} MB</p>
+        <p><b>Free Storage:</b> {freeMB.toFixed(2)} MB</p>
 
         {/* Progress bar */}
         <div style={{ background: "#eee", borderRadius: 8, height: 18 }}>
@@ -58,6 +68,7 @@ export default function StorageDashboard() {
               fontSize: 12,
               textAlign: "center",
               borderRadius: 8,
+              lineHeight: "18px",
             }}
           >
             {percent}%
@@ -94,7 +105,7 @@ export default function StorageDashboard() {
             {tables.map((t) => (
               <tr key={t.table_name}>
                 <td>{t.table_name}</td>
-                <td align="right">{t.rows}</td>
+                <td align="right">{t.rows ?? 0}</td>
               </tr>
             ))}
           </tbody>
