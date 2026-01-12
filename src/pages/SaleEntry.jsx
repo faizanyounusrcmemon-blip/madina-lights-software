@@ -1,3 +1,5 @@
+// src/pages/SaleEntry.jsx
+
 import React, { useEffect, useState } from "react";
 import supabase from "../utils/supabaseClient";
 import ThermalPrint from "./ThermalPrint";
@@ -7,8 +9,9 @@ export default function SaleEntry() {
   const [saleDate, setSaleDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
+  const [focusedField, setFocusedField] = useState("");
 
-  /* ================= CUSTOMER ================= */
+  // ================= CUSTOMER =================
   const [customerCode, setCustomerCode] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [customerAddress, setCustomerAddress] = useState("");
@@ -19,93 +22,153 @@ export default function SaleEntry() {
   const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
 
-  /* ================= ITEM ================= */
+  // ================= ITEM =================
+  const [barcode, setBarcode] = useState("");
+  const [itemCode, setItemCode] = useState("");
+  const [itemName, setItemName] = useState("");
+  const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
+  const [saleRate, setSaleRate] = useState("");
+  const [qty, setQty] = useState("");
+  const [discount, setDiscount] = useState("");
+  const [amount, setAmount] = useState(0);
   const [itemList, setItemList] = useState([]);
+
   const [itemSearch, setItemSearch] = useState("");
   const [filteredItems, setFilteredItems] = useState([]);
   const [showItemDropdown, setShowItemDropdown] = useState(false);
-
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [qty, setQty] = useState("");
 
   const [entries, setEntries] = useState([]);
   const [printData, setPrintData] = useState(null);
   const [reprintInvoice, setReprintInvoice] = useState("");
 
-  /* ================= LOAD DATA ================= */
+  // ================= LOAD DATA =================
   useEffect(() => {
-    supabase.from("customers").select("*").then(({ data }) => {
+    (async () => {
+      const { data } = await supabase.from("customers").select("*");
       setCustomerList(data || []);
-    });
+    })();
 
-    supabase.from("items").select("*").then(({ data }) => {
+    (async () => {
+      const { data } = await supabase.from("items").select("*");
       setItemList(data || []);
-    });
+    })();
 
-    supabase.from("sales").select("invoice_no").then(({ data }) => {
+    (async () => {
+      const { data } = await supabase.from("sales").select("invoice_no");
       const unique = [
         ...new Set((data || []).map((d) => d.invoice_no).filter(Boolean)),
       ];
       setInvoiceNo(`INV-${unique.length + 1}`);
-    });
+    })();
   }, []);
 
-  /* ================= CUSTOMER SEARCH ================= */
+  // ================= AUTO LOOKUPS =================
   useEffect(() => {
-    if (!customerSearch) return setFilteredCustomers([]);
-    setFilteredCustomers(
-      customerList.filter((c) =>
-        c.customer_name.toLowerCase().includes(customerSearch.toLowerCase())
-      )
+    if (!customerCode) return;
+    const c = customerList.find(
+      (x) => String(x.customer_code) === String(customerCode)
     );
-  }, [customerSearch, customerList]);
+    if (c) {
+      setCustomerName(c.customer_name);
+      setCustomerSearch(c.customer_name);
+      setCustomerAddress(c.address);
+      setCustomerPhone(c.phone);
+    }
+  }, [customerCode, customerList]);
 
-  /* ================= ITEM SEARCH ================= */
+  useEffect(() => {
+    if (!itemCode && !barcode) return;
+    const i =
+      itemList.find(
+        (x) =>
+          String(x.id) === String(itemCode) ||
+          String(x.barcode) === String(barcode)
+      ) || null;
+
+    if (i) {
+      setItemCode(i.id);
+      setBarcode(i.barcode);
+      setItemName(i.item_name);
+      setItemSearch(i.item_name);
+      setCategory(i.category);
+      setDescription(i.description);
+      setSaleRate(i.sale_price);
+    }
+  }, [itemCode, barcode, itemList]);
+
+  // ================= AMOUNT =================
+  useEffect(() => {
+    const r = Number(saleRate || 0);
+    const q = Number(qty || 0);
+    const d = Number(discount || 0);
+    const a = r * q - (r * q * d) / 100;
+    setAmount(isNaN(a) ? 0 : a);
+  }, [saleRate, qty, discount]);
+
+  // ================= SEARCH =================
   useEffect(() => {
     if (!itemSearch) return setFilteredItems([]);
     setFilteredItems(
-      itemList.filter((i) =>
-        i.item_name.toLowerCase().includes(itemSearch.toLowerCase())
+      itemList.filter((x) =>
+        x.item_name.toLowerCase().includes(itemSearch.toLowerCase())
       )
     );
   }, [itemSearch, itemList]);
 
-  /* ================= ADD ITEM ================= */
-  const handleAdd = () => {
-    if (!selectedItem || !qty) return alert("Item or Qty missing!");
+  useEffect(() => {
+    if (!customerSearch) return setFilteredCustomers([]);
+    setFilteredCustomers(
+      customerList.filter((x) =>
+        x.customer_name.toLowerCase().includes(customerSearch.toLowerCase())
+      )
+    );
+  }, [customerSearch, customerList]);
 
-    const amount = Number(selectedItem.sale_price) * Number(qty);
+  // ================= ADD ITEM =================
+  const handleAdd = () => {
+    if (!itemName || !qty) return alert("Item or Qty missing!");
 
     setEntries([
       ...entries,
       {
-        item_code: selectedItem.id,
-        barcode: selectedItem.barcode,
-        item_name: selectedItem.item_name,
-        sale_rate: selectedItem.sale_price,
+        itemCode,
+        barcode,
+        itemName,
+        category,
+        description,
+        saleRate,
         qty,
+        discount,
         amount,
       },
     ]);
 
+    setItemCode("");
+    setBarcode("");
+    setItemName("");
     setItemSearch("");
-    setSelectedItem(null);
+    setCategory("");
+    setDescription("");
+    setSaleRate("");
     setQty("");
-    setTimeout(() => document.getElementById("itemName").focus(), 50);
+    setDiscount("");
+    setAmount(0);
+
+    setTimeout(() => document.getElementById("itemName").focus(), 80);
   };
 
-  /* ================= REMOVE ================= */
   const handleRemove = (i) => {
-    const copy = [...entries];
-    copy.splice(i, 1);
-    setEntries(copy);
+    const x = [...entries];
+    x.splice(i, 1);
+    setEntries(x);
   };
 
-  /* ================= SAVE ================= */
+  // ================= SAVE =================
   const handleSave = async () => {
     if (!entries.length) return alert("No items!");
 
-    const total = entries.reduce((s, e) => s + e.amount, 0);
+    const total = entries.reduce((s, e) => s + Number(e.amount || 0), 0);
 
     const rows = entries.map((e) => ({
       invoice_no: invoiceNo,
@@ -114,11 +177,14 @@ export default function SaleEntry() {
       customer_name: customerName,
       customer_address: customerAddress,
       customer_phone: customerPhone,
-      item_code: e.item_code,
-      item_name: e.item_name,
+      item_code: e.itemCode,
+      item_name: e.itemName,
       barcode: e.barcode,
-      sale_rate: e.sale_rate,
+      category: e.category,
+      description: e.description,
+      sale_rate: e.saleRate,
       qty: e.qty,
+      discount: e.discount,
       amount: e.amount,
       total_amount: total,
       created_at: new Date().toISOString(),
@@ -127,12 +193,11 @@ export default function SaleEntry() {
     const { error } = await supabase.from("sales").insert(rows);
     if (error) return alert(error.message);
 
-    for (const e of entries) {
+    for (const e of entries)
       await supabase.rpc("decrease_stock", {
         p_barcode: e.barcode,
         p_qty: e.qty,
       });
-    }
 
     setPrintData({
       invoiceNo,
@@ -141,6 +206,7 @@ export default function SaleEntry() {
       customerPhone,
       entries,
       total,
+      discount,
     });
 
     setEntries([]);
@@ -150,113 +216,153 @@ export default function SaleEntry() {
       ...new Set((data || []).map((d) => d.invoice_no).filter(Boolean)),
     ];
     setInvoiceNo(`INV-${unique.length + 1}`);
+
+    setTimeout(() => document.getElementById("customerCode").focus(), 100);
   };
 
+  // ================= UI =================
   return (
-    <div style={{ padding: 20 }}>
-      <h2 align="center">Sale Entry</h2>
+    <div style={{ padding: 20, fontFamily: "Arial" }}>
+      <h2 style={{ textAlign: "center" }}>Sale Entry</h2>
 
-      {/* CUSTOMER */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
-        <input
-          placeholder="Customer Code"
-          value={customerCode}
-          onChange={(e) => setCustomerCode(e.target.value)}
-        />
-
-        <div style={{ position: "relative" }}>
-          <input
-            placeholder="Customer Name"
-            value={customerSearch}
-            onChange={(e) => {
-              setCustomerSearch(e.target.value);
-              setShowCustomerDropdown(true);
-            }}
-          />
-          {showCustomerDropdown && (
-            <div style={{ position: "absolute", background: "#fff" }}>
-              {filteredCustomers.map((c) => (
-                <div
-                  key={c.customer_code}
-                  onMouseDown={() => {
-                    setCustomerCode(c.customer_code);
-                    setCustomerName(c.customer_name);
-                    setCustomerSearch(c.customer_name);
-                    setCustomerAddress(c.address);
-                    setCustomerPhone(c.phone);
-                    setShowCustomerDropdown(false);
-                  }}
-                >
-                  {c.customer_name}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <input placeholder="Phone" value={customerPhone} readOnly />
-      </div>
-
-      {/* ================= ITEM ENTRY (ONE ROW – 3 FIELDS) ================= */}
+      {/* ================= ITEM ENTRY (ONE ROW) ================= */}
       <div
         style={{
           display: "flex",
           gap: 10,
-          border: "1px solid #ccc",
+          flexWrap: "nowrap",
+          border: "1px solid #ddd",
           padding: 10,
           borderRadius: 6,
+          alignItems: "flex-end",
         }}
       >
+        <div>
+          <label>Item Code</label>
+          <input value={itemCode} readOnly tabIndex={-1} />
+        </div>
+
+        <div>
+          <label>Barcode</label>
+          <input value={barcode} readOnly tabIndex={-1} />
+        </div>
+
         {/* ITEM NAME */}
-        <div style={{ position: "relative", flex: 2 }}>
+        <div style={{ position: "relative", minWidth: 220 }}>
+          <label>Item Name</label>
           <input
             id="itemName"
-            placeholder="Item Name"
             value={itemSearch}
             onChange={(e) => {
               setItemSearch(e.target.value);
               setShowItemDropdown(true);
             }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                document.getElementById("qty").focus();
+              }
+            }}
+            autoComplete="off"
           />
+
           {showItemDropdown && filteredItems.length > 0 && (
-            <div style={{ position: "absolute", background: "#fff" }}>
-              {filteredItems.map((i) => (
+            <div
+              style={{
+                position: "absolute",
+                top: "55px",
+                left: 0,
+                width: "100%",
+                background: "#fff",
+                border: "1px solid #ccc",
+                zIndex: 999,
+              }}
+            >
+              {filteredItems.map((it) => (
                 <div
-                  key={i.id}
+                  key={it.id}
+                  style={{ padding: 6, cursor: "pointer" }}
                   onMouseDown={() => {
-                    setSelectedItem(i);
-                    setItemSearch(i.item_name);
+                    setItemCode(it.id);
+                    setBarcode(it.barcode);
+                    setItemName(it.item_name);
+                    setItemSearch(it.item_name);
+                    setCategory(it.category);
+                    setDescription(it.description);
+                    setSaleRate(it.sale_price);
                     setShowItemDropdown(false);
-                    setTimeout(() => document.getElementById("qty").focus(), 50);
+                    setTimeout(
+                      () => document.getElementById("qty").focus(),
+                      40
+                    );
                   }}
                 >
-                  {i.item_name}
+                  {it.item_name}
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* QTY */}
-        <input
-          id="qty"
-          placeholder="Qty"
-          value={qty}
-          onChange={(e) => setQty(e.target.value)}
-        />
+        <div>
+          <label>Category</label>
+          <input value={category} readOnly tabIndex={-1} />
+        </div>
 
-        {/* ADD */}
-        <button onClick={handleAdd}>➕ Add Item</button>
+        <div>
+          <label>Description</label>
+          <input value={description} readOnly tabIndex={-1} />
+        </div>
+
+        <div>
+          <label>Rate</label>
+          <input value={saleRate} readOnly tabIndex={-1} />
+        </div>
+
+        <div>
+          <label>Qty</label>
+          <input
+            id="qty"
+            value={qty}
+            onChange={(e) => setQty(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                document.getElementById("addItemBtn").focus();
+              }
+            }}
+          />
+        </div>
+
+        <div>
+          <label>Discount %</label>
+          <input value={discount} readOnly tabIndex={-1} />
+        </div>
+
+        <div>
+          <button
+            id="addItemBtn"
+            onClick={handleAdd}
+            onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+          >
+            Add Item
+          </button>
+        </div>
       </div>
 
-      {/* TABLE */}
-      <table width="100%" border="1" style={{ marginTop: 10 }}>
+      {/* ================= ITEMS TABLE ================= */}
+      <table
+        border="1"
+        width="100%"
+        style={{ marginTop: 10, borderCollapse: "collapse" }}
+      >
         <thead>
-          <tr>
+          <tr style={{ background: "#f1f1f1" }}>
             <th>#</th>
             <th>Item</th>
             <th>Rate</th>
             <th>Qty</th>
+            <th>Disc%</th>
             <th>Amount</th>
             <th>❌</th>
           </tr>
@@ -265,19 +371,30 @@ export default function SaleEntry() {
           {entries.map((e, i) => (
             <tr key={i}>
               <td>{i + 1}</td>
-              <td>{e.item_name}</td>
-              <td>{e.sale_rate}</td>
+              <td>{e.itemName}</td>
+              <td>{e.saleRate}</td>
               <td>{e.qty}</td>
-              <td>{e.amount}</td>
+              <td>{e.discount}</td>
+              <td>{e.amount.toFixed(2)}</td>
               <td>
-                <button onClick={() => handleRemove(i)}>✖</button>
+                <button
+                  onClick={() => handleRemove(i)}
+                  style={{
+                    background: "red",
+                    color: "white",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  ✖
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <div align="right" style={{ marginTop: 10 }}>
+      <div style={{ marginTop: 10, textAlign: "right" }}>
         <button onClick={handleSave}>💾 Save & Print</button>
       </div>
 
