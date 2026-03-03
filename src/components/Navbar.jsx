@@ -9,7 +9,7 @@ export default function Navbar({ onNavigate = () => {} }) {
   const can = (perm) =>
     user?.role === "admin" || user?.[perm] === true;
 
-  // 🔹 Outside click close
+  // Outside click close
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (navRef.current && !navRef.current.contains(e.target)) {
@@ -30,45 +30,64 @@ export default function Navbar({ onNavigate = () => {} }) {
     onNavigate(route);
   };
 
-  return (
-    <div
-      ref={navRef}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        background: "#1a1a2e",
-        padding: "10px 20px",
-        color: "#fff",
-        fontFamily: "Inter, sans-serif",
-        flexWrap: "wrap",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
-        position: "sticky",
-        top: 0,
-        zIndex: 1000,
-      }}
-    >
-      {/* LEFT MENUS */}
-      <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
-        {/* BRAND */}
-        <div
-          style={{
-            fontWeight: "bold",
-            fontSize: 18,
-            cursor: "pointer",
-            marginRight: 20,
-            padding: "4px 8px",
-            borderRadius: 6,
-            background: "linear-gradient(90deg,#ff6a00,#ffb400)",
-            color: "#fff",
-            boxShadow: "0 2px 6px rgba(255,180,0,0.5)",
-            userSelect: "none",
-          }}
-          onClick={() => handleNavigate("dashboard")}
-        >
-          💡 Madina Lights 💡
-        </div>
+  const logout = () => {
+    sessionStorage.clear();
+    localStorage.clear();
+    onNavigate("login");
+    window.location.reload();
+  };
 
+  return (
+    <>
+      {/* Animation */}
+      <style>
+        {`
+        @keyframes pulse {
+          0% { opacity: 0.3; transform: scale(0.8); }
+          50% { opacity: 1; transform: scale(1.2); }
+          100% { opacity: 0.3; transform: scale(0.8); }
+        }
+        `}
+      </style>
+
+      <div
+        ref={navRef}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          background: "#1a1a2e",
+          padding: "8px 20px",
+          color: "#fff",
+          fontFamily: "Inter, sans-serif",
+          flexWrap: "wrap",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.5)",
+          position: "sticky",
+          top: 0,
+          zIndex: 1000,
+        }}
+      >
+        {/* LEFT MENUS */}
+        <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap" }}>
+          {/* BRAND */}
+          <div
+            style={{
+              fontWeight: "bold",
+              fontSize: 16,
+              cursor: "pointer",
+              marginRight: 20,
+              padding: "4px 8px",
+              borderRadius: 6,
+              background: "linear-gradient(90deg,#ff6a00,#ffb400)",
+              color: "#fff",
+              boxShadow: "0 2px 6px rgba(255,180,0,0.5)",
+              userSelect: "none",
+            }}
+            onClick={() => handleNavigate("dashboard")}
+          >
+            💡 Madina Lights 💡
+          </div>
+        </div>
         {/* MENU COMPONENT */}
         {[
           {
@@ -198,57 +217,83 @@ export default function Navbar({ onNavigate = () => {} }) {
         ))}
       </div>
 
-      {/* RIGHT ACTIONS */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <button
-          style={{
-            padding: "6px 14px",
-            borderRadius: 6,
-            border: "none",
-            fontWeight: "bold",
-            cursor: "pointer",
-            background: "linear-gradient(90deg,#6f42c1,#a866f9)",
-            color: "#fff",
-            boxShadow: "0 3px 8px rgba(0,0,0,0.5)",
-          }}
-          onClick={() => handleNavigate("restore")}
-        >
-          🔄 Restore
-        </button>
+        {/* RIGHT ACTIONS */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {/* Restore */}
+          <button
+            style={{
+              padding: "5px 12px",
+              borderRadius: 6,
+              border: "none",
+              fontWeight: "bold",
+              cursor: "pointer",
+              background: "linear-gradient(90deg,#6f42c1,#a866f9)",
+              color: "#fff",
+              boxShadow: "0 3px 8px rgba(0,0,0,0.5)",
+              fontSize: 13,
+            }}
+            onClick={() => handleNavigate("restore")}
+          >
+            🔄 Restore
+          </button>
 
-        <div
-          style={{
-            padding: "6px 12px",
-            borderRadius: 6,
-            background: "#333",
-            fontWeight: "bold",
-            color: "#0bd46e",
-          }}
-        >
-          🟢 {user?.username || "User"} ({user?.role || "guest"})
+          {/* ONLINE INDICATOR */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              fontSize: 12,
+              fontWeight: "bold",
+              color: "#00ff88",
+            }}
+          >
+            <span
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: "#00ff88",
+                boxShadow: "0 0 6px #00ff88",
+                animation: "pulse 1.5s infinite",
+              }}
+            ></span>
+            Online
+          </div>
+
+          {/* USER INFO */}
+          <div
+            style={{
+              padding: "5px 10px",
+              borderRadius: 6,
+              background: "#333",
+              fontWeight: "bold",
+              fontSize: 12,
+              color: "#0bd46e",
+            }}
+          >
+            👤 {user?.username || "User"} ({user?.role || "guest"})
+          </div>
+
+          {/* LOGOUT */}
+          <button
+            style={{
+              padding: "5px 12px",
+              borderRadius: 6,
+              border: "none",
+              fontWeight: "bold",
+              cursor: "pointer",
+              background: "linear-gradient(90deg,#ff6a00,#ffb400)",
+              color: "#000",
+              boxShadow: "0 3px 8px rgba(0,0,0,0.5)",
+              fontSize: 13,
+            }}
+            onClick={logout}
+          >
+            Logout
+          </button>
         </div>
-
-        <button
-          style={{
-            padding: "6px 14px",
-            borderRadius: 6,
-            border: "none",
-            fontWeight: "bold",
-            cursor: "pointer",
-            background: "linear-gradient(90deg,#ff6a00,#ffb400)",
-            color: "#000",
-            boxShadow: "0 3px 8px rgba(0,0,0,0.5)",
-          }}
-          onClick={() => {
-            sessionStorage.clear();
-            localStorage.clear();
-            onNavigate("login");
-            window.location.reload();
-          }}
-        >
-          Logout
-        </button>
       </div>
-    </div>
+    </>
   );
 }
