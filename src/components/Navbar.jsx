@@ -228,6 +228,12 @@ export default function Navbar({ onNavigate = () => {} }) {
           🟢 {user?.username || "User"} ({user?.role || "guest"})
         </div>
 
+        <div className="nav-user">
+          <div className="online-indicator-nav">
+            <span className="online-dot"></span>
+            Online
+        </div>
+
         <button
           style={{
             padding: "6px 14px",
