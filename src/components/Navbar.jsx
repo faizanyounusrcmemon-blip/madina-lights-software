@@ -30,6 +30,16 @@ export default function Navbar({ onNavigate = () => {} }) {
     onNavigate(route);
   };
 
+<style>
+{`
+@keyframes pulse {
+  0% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 0.3; transform: scale(0.8); }
+}
+`}
+</style>
+
   return (
     <div
       ref={navRef}
@@ -227,6 +237,30 @@ export default function Navbar({ onNavigate = () => {} }) {
         >
           🟢 {user?.username || "User"} ({user?.role || "guest"})
         </div>
+
+{/* ONLINE INDICATOR */}
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: 5,
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#00ff88",
+  }}
+>
+  <span
+    style={{
+      width: 6,
+      height: 6,
+      borderRadius: "50%",
+      background: "#00ff88",
+      boxShadow: "0 0 6px #00ff88",
+      animation: "pulse 1.5s infinite",
+    }}
+  ></span>
+  Online
+</div>
 
         <button
           style={{
