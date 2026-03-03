@@ -30,15 +30,16 @@ export default function Navbar({ onNavigate = () => {} }) {
     onNavigate(route);
   };
 
-<style>
-{`
-@keyframes pulse {
-  0% { opacity: 0.3; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
-  100% { opacity: 0.3; transform: scale(0.8); }
-}
-`}
-</style>
+useEffect(() => {
+  const style = document.createElement("style");
+  style.innerHTML = `
+    @keyframes pulse {
+      0% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.3); }
+      100% { opacity: 0.3; transform: scale(0.8); }
+    }
+  `;
+  document.head.appendChild(style);
 
   return (
     <div
@@ -256,8 +257,9 @@ export default function Navbar({ onNavigate = () => {} }) {
       borderRadius: "50%",
       background: "#00ff88",
       boxShadow: "0 0 6px #00ff88",
-      animation: "pulse 1.5s infinite",
+      animation: "pulse 1.5s ease-in-out infinite",
     }}
+    className="online-dot"
   ></span>
   Online
 </div>
