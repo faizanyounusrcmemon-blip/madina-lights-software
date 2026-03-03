@@ -41,6 +41,11 @@ useEffect(() => {
   `;
   document.head.appendChild(style);
 
+  return () => {        // ✅ Cleanup function
+    document.head.removeChild(style);
+  };
+}, []);
+
   return (
     <div
       ref={navRef}
