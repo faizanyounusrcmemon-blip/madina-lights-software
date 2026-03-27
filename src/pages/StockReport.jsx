@@ -1,5 +1,5 @@
 // ===============================================
-//   STOCK REPORT (Search + Rate + Amount FINAL)
+//   STOCK REPORT (FINAL STABLE VERSION)
 // ===============================================
 
 import { useEffect, useState, useMemo } from "react";
@@ -9,25 +9,49 @@ export default function StockReport({ onNavigate }) {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
 
-  const API = import.meta.env.VITE_BACKEND_URL;
+  // ✅ SAFE API (fallback added)
+  const API =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
   // ===============================
-  // LOAD STOCK
+  // LOAD STOCK (ERROR PROOF)
   // ===============================
   async function loadStock() {
     setLoading(true);
     try {
       const res = await fetch(`${API}/api/stock-report`);
-      const data = await res.json();
 
-      if (!data.success) {
-        alert("❌ Error loading stock: " + data.error);
-      } else {
-        setRows(data.rows || []);
+      // ✅ network fail / backend down
+      if (!res.ok) {
+        throw new Error(`Server error (${res.status})`);
       }
+
+      // ✅ safe JSON parse
+      const text = await res.text();
+
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        throw new Error("Invalid JSON from server");
+      }
+
+      // ✅ backend error
+      if (!data.success) {
+        alert("❌ Backend Error: " + data.error);
+        return;
+      }
+
+      setRows(data.rows || []);
     } catch (err) {
-      console.error(err);
-      alert("❌ Request failed");
+      console.error("LOAD STOCK ERROR:", err);
+
+      alert(
+        "❌ Server connect nahi ho raha\n\n" +
+          "✔ Backend chal raha hai?\n" +
+          "✔ URL sahi hai?\n" +
+          "✔ Internet ok hai?"
+      );
     } finally {
       setLoading(false);
     }
@@ -39,7 +63,7 @@ export default function StockReport({ onNavigate }) {
   }, []);
 
   // ===============================
-  // 🔍 SEARCH FILTER (SAFE)
+  // 🔍 SEARCH FILTER
   // ===============================
   const filteredRows = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -53,7 +77,10 @@ export default function StockReport({ onNavigate }) {
   }, [rows, search]);
 
   return (
-    <div className="container-fluid text-light py-3" style={{ fontFamily: "Inter" }}>
+    <div
+      className="container-fluid text-light py-3"
+      style={{ fontFamily: "Inter" }}
+    >
       {/* EXIT */}
       <button
         onClick={() => onNavigate("dashboard")}
@@ -96,7 +123,7 @@ export default function StockReport({ onNavigate }) {
         </button>
       </div>
 
-      {/* 🔍 SEARCH BAR */}
+      {/* SEARCH */}
       <input
         type="text"
         placeholder="🔍 Search by barcode or item name..."
@@ -122,7 +149,11 @@ export default function StockReport({ onNavigate }) {
         }}
       >
         <div className="card-body p-2">
-          {filteredRows.length > 0 ? (
+          {loading ? (
+            <p className="text-info text-center py-3">
+              Loading stock...
+            </p>
+          ) : filteredRows.length > 0 ? (
             <div className="table-responsive" style={{ maxHeight: "75vh" }}>
               <table className="table table-dark table-bordered table-sm mb-0">
                 <thead
@@ -147,8 +178,6 @@ export default function StockReport({ onNavigate }) {
                   {filteredRows.map((r, i) => {
                     const qty = Number(r.stock_qty || 0);
                     const rate = Number(r.rate || 0);
-
-                    // ✅ backend amount preferred, fallback safe
                     const amount =
                       r.amount !== undefined
                         ? Number(r.amount)
@@ -163,7 +192,8 @@ export default function StockReport({ onNavigate }) {
                           className="text-end"
                           style={{
                             fontWeight: "bold",
-                            color: qty > 0 ? "#00ff66" : "#ff5555",
+                            color:
+                              qty > 0 ? "#00ff66" : "#ff5555",
                           }}
                         >
                           {qty}
@@ -189,11 +219,9 @@ export default function StockReport({ onNavigate }) {
               </table>
             </div>
           ) : (
-            !loading && (
-              <p className="text-warning text-center py-3">
-                No matching stock found.
-              </p>
-            )
+            <p className="text-warning text-center py-3">
+              No stock found.
+            </p>
           )}
         </div>
       </div>
